@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       FocusNode(); // Para detectar el cierre del teclado.
 
   final List<Widget> _pages = [
-    const FirstPage(),
+    const MainScreen(),
     const SecondPage(),
     const ThirdPage(),
   ];
