@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_league_flutter/screens/first_page.dart';
+import 'package:my_league_flutter/screens/second_page.dart';
+import 'package:my_league_flutter/screens/third_page.dart';
+import 'package:my_league_flutter/widgets/user_drawer.dart';
 
 void main() {
   runApp(const MainApp());
@@ -103,42 +107,17 @@ class _HomePageState extends State<HomePage> {
                       : 'Página de Notificaciones',
                 ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text('Menú Deslizable'),
-            ),
-            ListTile(
-              title: const Text('Opción 1'),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Opción 1 seleccionada')),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Opción 2'),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Opción 2 seleccionada')),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: UserDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.futbol),
-            label: 'Cancha',
+            label: 'Inicio',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_soccer),
-            label: 'Balón',
+            label: 'Mi cancha',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
@@ -149,32 +128,5 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
       ),
     );
-  }
-}
-
-class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Página de Cancha'));
-  }
-}
-
-class SecondPage extends StatelessWidget {
-  const SecondPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Página de Balón'));
-  }
-}
-
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Página de Notificaciones'));
   }
 }
