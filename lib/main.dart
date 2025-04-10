@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_league_flutter/screens/first_page.dart';
+import 'package:my_league_flutter/screens/main_screen.dart';
 import 'package:my_league_flutter/screens/second_page.dart';
 import 'package:my_league_flutter/screens/third_page.dart';
 import 'package:my_league_flutter/widgets/user_drawer.dart';
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.futbol),
-            label: 'Inicio',
+            label: 'Partidos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_soccer),

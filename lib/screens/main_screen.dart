@@ -15,42 +15,38 @@ class _MainScreenState extends State<MainScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Agregar'),
+          title: const Text('Crea tu propio torneo'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: const Icon(Icons.sports_soccer, color: Colors.green),
-                title: const Text('Agregar Campeonato'),
-                onTap: () {
-                  Navigator.pop(context); // Cerrar el diálogo
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opción: Agregar Campeonato seleccionada'),
-                    ),
-                  );
-                },
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Nombre',
+                  hintText: 'Nombre del torneo',
+                ),
               ),
-              ListTile(
-                leading: const Icon(Icons.people, color: Colors.blue),
-                title: const Text('Agregar Equipo'),
-                onTap: () {
-                  Navigator.pop(context); // Cerrar el diálogo
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opción: Agregar Equipo seleccionada'),
-                    ),
-                  );
-                },
+              // TODO: Add the location and fields
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Organizador',
+                  hintText: 'Nombre del organizador del torneo',
+                ),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Cerrar el diálogo
+                Navigator.pop(context);
               },
               child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Aquí puedes manejar la lógica al presionar "Guardar"
+                Navigator.pop(context);
+              },
+              child: const Text('Guardar'),
             ),
           ],
         );
