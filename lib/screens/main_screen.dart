@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_league_flutter/screens/new_league.dart';
+import 'package:my_league_flutter/screens/new_league/new_league.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
