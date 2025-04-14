@@ -9,10 +9,10 @@ class NewLeagueTeams extends StatefulWidget {
   const NewLeagueTeams({super.key, required this.leagueId});
 
   @override
-  State<NewLeagueTeams> createState() => _NewLeagueTeams();
+  State<NewLeagueTeams> createState() => _NewLeagueTeamsState();
 }
 
-class _NewLeagueTeams extends State<NewLeagueTeams> {
+class _NewLeagueTeamsState extends State<NewLeagueTeams> {
   LeagueService leagueService = LeagueService();
 
   bool isLoading = true;

@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const MainScreen(),
-    const SecondPage(),
+    const MyField(),
     const ThirdPage(),
   ];
 
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     )
                 : Text(
                   _selectedIndex == 1
-                      ? 'Página de Balón'
+                      ? 'Mi cancha'
                       : 'Página de Notificaciones',
                 ),
       ),

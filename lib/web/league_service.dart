@@ -45,4 +45,15 @@ class LeagueService {
       return null;
     }
   }
+
+  Future<List<DefaultDto>> getLeagues() async {
+    try {
+      final response = await _dio.get("/leagues");
+      print('Leagues retrieved: ${response.data}');
+      return DefaultDto.fromJsonList(response.data);
+    } catch (e) {
+      print('Error getting leagues: $e');
+      return [];
+    }
+  }
 }
