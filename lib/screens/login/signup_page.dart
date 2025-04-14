@@ -8,13 +8,16 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final FocusNode emailFocusNode = FocusNode();
 
   bool hasMinLength = false;
   bool hasNumber = false;
   bool passwordsMatch = true;
+  String? emailErrorText;
 
   void validatePassword(String password) {
     setState(() {
@@ -29,21 +32,22 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
-  void showAlert(String message) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    emailFocusNode.addListener(() {
+      if (!emailFocusNode.hasFocus) {
+        setState(() {
+          emailErrorText = _validateEmail(emailController.text);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,7 +62,9 @@ class _SignupPageState extends State<SignupPage> {
             _buildCustomTextField(
               'Correo electrónico*',
               TextInputType.emailAddress,
-              null,
+              emailController,
+              focusNode: emailFocusNode,
+              errorText: emailErrorText,
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField('Usuario*', TextInputType.text, null),
@@ -139,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                     !hasMinLength ||
                     !hasNumber ||
                     !passwordsMatch) {
-                  showAlert(
+                  _showAlert(
                     'Por favor, asegúrate de llenar todos los campos correctamente.',
                   );
                 } else {
@@ -156,12 +162,30 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  void _showAlert(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    );
+  }
+
   Widget _buildCustomTextField(
     String labelText,
     TextInputType keyboardType,
     TextEditingController? controller, {
     bool obscureText = false,
     String? errorText,
+    FocusNode? focusNode,
     Function(String)? onChanged,
     Widget? trailingIcon,
   }) {
@@ -178,6 +202,7 @@ class _SignupPageState extends State<SignupPage> {
               controller: controller,
               obscureText: obscureText,
               keyboardType: keyboardType,
+              focusNode: focusNode,
               decoration: InputDecoration(
                 labelText: labelText,
                 border: InputBorder.none,
@@ -190,5 +215,20 @@ class _SignupPageState extends State<SignupPage> {
         ],
       ),
     );
+  }
+
+  String? _validateEmail(String email) {
+    if (email.isEmpty) {
+      return "El correo es obligatorio";
+    }
+
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    if (!emailRegex.hasMatch(email)) {
+      return "El formato del correo es incorrecto";
+    }
+    return null;
   }
 }
