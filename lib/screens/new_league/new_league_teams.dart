@@ -102,8 +102,15 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      _showDialogNewTeam(context);
+                    onPressed: () async {
+                      final result = await _showDialogNewTeam(context);
+                      if (result == true) {
+                        _getTeamsFromLeague(widget.leagueId).then((response) {
+                          setState(() {
+                            teams = response ?? [];
+                          });
+                        });
+                      }
                     },
                     child: const Text("Agregar equipo"),
                   ),
@@ -160,13 +167,9 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                                 name: _teamNameController.text,
                               ),
                               widget.leagueId,
-                            ).then((response) {
-                              setState(() {
-                                teams.add(response!);
-                              });
-                            });
+                            );
 
-                            Navigator.pop(context);
+                            Navigator.pop(context, true);
                           }
                           : null,
                   child: const Text('Crear'),
