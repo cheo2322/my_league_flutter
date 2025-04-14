@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/main.dart';
-import 'package:my_league_flutter/screens/login_page.dart';
+import 'package:my_league_flutter/screens/login/login_page.dart';
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
