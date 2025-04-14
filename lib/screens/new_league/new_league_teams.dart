@@ -14,8 +14,12 @@ class NewLeagueTeams extends StatefulWidget {
 
 class _NewLeagueTeams extends State<NewLeagueTeams> {
   LeagueService leagueService = LeagueService();
+
   bool isLoading = true;
-  List<DefaultDto>? teams = [];
+  List<DefaultDto> teams = [];
+
+  final TextEditingController _teamNameController = TextEditingController();
+  bool isButtonEnabled = false;
 
   Future<List<DefaultDto>?> _getTeamsFromLeague(String leagueId) async {
     try {
@@ -34,14 +38,35 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
     }
   }
 
+  Future<DefaultDto?> _addTeamToLeague(
+    DefaultDto teamDto,
+    String leagueId,
+  ) async {
+    try {
+      final response = await leagueService.addTeamToLeague(teamDto, leagueId);
+
+      if (response != null) {
+        print("Team added");
+        return response;
+      } else {
+        print("Error adding team");
+        return null;
+      }
+    } catch (e) {
+      print("Error in _addTeamToLeague: $e");
+      return null;
+    }
+  }
+
   @override
   void initState() {
     _getTeamsFromLeague(widget.leagueId).then((response) {
       setState(() {
-        teams = response;
+        teams = response!;
         isLoading = false;
       });
     });
+
     super.initState();
   }
 
@@ -68,21 +93,19 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: teams!.length,
+                      itemCount: teams.length,
                       itemBuilder: (context, index) {
                         return Card(
-                          child: ListTile(title: Text(teams![index].name)),
+                          child: ListTile(title: Text(teams[index].name)),
                         );
                       },
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      print("Pressed!");
-
-                      // Add logic
+                      _showDialogNewTeam(context);
                     },
-                    child: Text("Agregar equipo"),
+                    child: const Text("Agregar equipo"),
                   ),
                 ],
               ),
@@ -97,6 +120,67 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _showDialogNewTeam(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Nuevo Equipo"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _teamNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nombre*',
+                      hintText: 'Escribe el nombre del equipo',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (text) {
+                      setState(() {
+                        isButtonEnabled = text.trim().length > 2;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed:
+                      isButtonEnabled
+                          ? () {
+                            _addTeamToLeague(
+                              DefaultDto(
+                                id: null,
+                                name: _teamNameController.text,
+                              ),
+                              widget.leagueId,
+                            ).then((response) {
+                              setState(() {
+                                teams.add(response!);
+                              });
+                            });
+                            Navigator.pop(context);
+                          }
+                          : null,
+                  child: const Text('Crear'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cerrar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

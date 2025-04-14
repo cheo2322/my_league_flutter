@@ -28,4 +28,21 @@ class LeagueService {
       return null;
     }
   }
+
+  Future<DefaultDto?> addTeamToLeague(
+    DefaultDto teamDto,
+    String leagueId,
+  ) async {
+    try {
+      final response = await _dio.post(
+        "/leagues/$leagueId/team",
+        data: teamDto.toJson(),
+      );
+      return DefaultDto.fromJson(response.data);
+    } catch (e) {
+      print("Error in createTeam");
+
+      return null;
+    }
+  }
 }
