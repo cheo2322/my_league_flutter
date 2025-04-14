@@ -55,33 +55,25 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Correo*'),
-              keyboardType: TextInputType.emailAddress,
-            ),
+            _buildCustomTextField('Correo*', TextInputType.emailAddress, null),
             const SizedBox(height: 16.0),
-            TextField(decoration: const InputDecoration(labelText: 'Usuario*')),
+            _buildCustomTextField('Usuario*', TextInputType.text, null),
             const SizedBox(height: 16.0),
-            TextField(
-              controller: passwordController,
+            _buildCustomTextField(
+              'Contraseña',
+              TextInputType.text,
+              passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Contraseña'),
               onChanged: validatePassword,
             ),
             const SizedBox(height: 16.0),
-            TextField(
-              controller: confirmPasswordController,
+            _buildCustomTextField(
+              'Repetir Contraseña',
+              TextInputType.text,
+              confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Repetir Contraseña',
-                errorText:
-                    passwordsMatch ? null : 'Las contraseñas no coinciden',
-              ),
-              onChanged: (value) {
-                validateConfirmPassword(
-                  value,
-                ); // Activar validación al escribir
-              },
+              onChanged: validateConfirmPassword,
+              errorText: passwordsMatch ? null : 'Las contraseñas no coinciden',
             ),
             const SizedBox(height: 16.0),
             Column(
@@ -128,6 +120,34 @@ class _SignupPageState extends State<SignupPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCustomTextField(
+    String labelText,
+    TextInputType keyboardType,
+    TextEditingController? controller, {
+    bool obscureText = false,
+    String? errorText,
+    Function(String)? onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: errorText == null ? Colors.grey : Colors.red),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: InputBorder.none,
+          errorText: errorText,
+        ),
+        onChanged: onChanged,
       ),
     );
   }
