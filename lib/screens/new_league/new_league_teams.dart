@@ -58,11 +58,11 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
           );
         }
       },
-      child: Stack(
-        children: [
-          Scaffold(
-            appBar: AppBar(title: Text('Agregar equipos')),
-            body: Padding(
+      child: Scaffold(
+        appBar: AppBar(title: Text('Agregar equipos')),
+        body: Stack(
+          children: [
+            Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
@@ -87,16 +87,15 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                 ],
               ),
             ),
-          ),
-
-          if (isLoading)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black54,
-                child: Center(child: CircularProgressIndicator()),
+            if (isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black54,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
