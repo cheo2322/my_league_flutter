@@ -31,14 +31,33 @@ class _MyFieldState extends State<MyField> {
         children: [
           Padding(
             padding: EdgeInsets.all(10),
-            child: Text(
-              'Ligas',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Ligas',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add, color: Colors.indigo),
+                  onPressed: () {
+                    // Acción para agregar una nueva liga
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Agregar nueva liga'),
+                        backgroundColor: Colors.indigo,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
 
           isLoadingLeagues
               ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              : leagues.isEmpty
+              ? Center(child: Text('No hay ligas disponibles'))
               : ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -73,14 +92,33 @@ class _MyFieldState extends State<MyField> {
 
           Padding(
             padding: EdgeInsets.all(10),
-            child: Text(
-              'Equipos',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Equipos',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add, color: Colors.indigo),
+                  onPressed: () {
+                    // Acción para agregar un nuevo equipo
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Agregar nuevo equipo'),
+                        backgroundColor: Colors.indigo,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
 
           isLoadingTeams
               ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              : teams.isEmpty
+              ? Center(child: Text('No hay equipos disponibles'))
               : ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -134,10 +172,10 @@ class _MyFieldState extends State<MyField> {
     Future.delayed(Duration(milliseconds: 3000), () {
       setState(() {
         teams = [
-          DefaultDto(id: '1', name: 'Team A'),
-          DefaultDto(id: '2', name: 'Team B'),
-          DefaultDto(id: '3', name: 'Team C'),
-          DefaultDto(id: '4', name: 'Team D'),
+          // DefaultDto(id: '1', name: 'Team A'),
+          // DefaultDto(id: '2', name: 'Team B'),
+          // DefaultDto(id: '3', name: 'Team C'),
+          // DefaultDto(id: '4', name: 'Team D'),
         ];
         isLoadingTeams = false;
       });
