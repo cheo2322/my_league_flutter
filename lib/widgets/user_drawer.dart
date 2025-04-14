@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/main.dart';
 import 'package:my_league_flutter/screens/login/login_page.dart';
+import 'package:my_league_flutter/screens/login/signup_page.dart';
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
@@ -98,11 +99,10 @@ class UserDrawer extends StatelessWidget {
                   leading: const Icon(Icons.person_add, color: Colors.blue),
                   title: const Text('Crear cuenta'),
                   onTap: () {
-                    // TODO: Create page to create account
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
+                        builder: (context) => const SignupPage(),
                       ),
                     );
                   },
