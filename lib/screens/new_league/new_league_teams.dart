@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/main.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
-import 'package:my_league_flutter/screens/main_screen.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class NewLeagueTeams extends StatefulWidget {
@@ -62,7 +62,9 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
   void initState() {
     _getTeamsFromLeague(widget.leagueId).then((response) {
       setState(() {
-        teams = response!;
+        if (response != null) {
+          teams = response;
+        }
         isLoading = false;
       });
     });
@@ -77,9 +79,9 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
       onPopInvokedWithResult: (bool didPop, Object? result) async {
         final salir = await _mostrarAlerta(context);
         if (salir) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainScreen()),
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
           );
         }
       },
@@ -92,14 +94,27 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
               child: Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: teams.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(title: Text(teams[index].name)),
-                        );
-                      },
-                    ),
+                    child:
+                        teams.isEmpty
+                            ? Center(
+                              child: Text(
+                                'Aún no has agregado equipos a tu torneo. Hazlo usando el botón de abajo',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            )
+                            : ListView.builder(
+                              itemCount: teams.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: ListTile(
+                                    title: Text(teams[index].name),
+                                  ),
+                                );
+                              },
+                            ),
                   ),
                   ElevatedButton(
                     onPressed: () async {
