@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_league_flutter/main.dart';
 
 class LeagueService {
-  Future<String> login(String username, String password) async {
+  Future<String?> login(String username, String password) async {
     await Future.delayed(const Duration(seconds: 1));
-    return 'simulated_token_12345';
+    return (username == 'admin' && password == '12345')
+        ? 'simulated_token_12345'
+        : null;
   }
 }
 
@@ -24,11 +27,30 @@ class LoginPage extends StatelessWidget {
         passwordController.text,
       );
 
-      await secureStorage.write(key: 'auth_token', value: token);
+      if (token != null) {
+        await secureStorage.write(key: 'auth_token', value: token);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login exitoso y token guardado')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Login exitoso'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Error: Usuario o contraseña incorrectos'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
 
     return Scaffold(
