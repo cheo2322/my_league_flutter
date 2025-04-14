@@ -27,100 +27,91 @@ class _MyFieldState extends State<MyField> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
+      body: ListView(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Ligas',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+
           isLoadingLeagues
               ? Center(child: CircularProgressIndicator(color: Colors.indigo))
-              : ListView(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Ligas',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+              : ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: leagues.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    elevation: 3,
+                    child: ListTile(
+                      leading: Icon(Icons.sports_soccer),
+                      title: Text(
+                        leagues[index].name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: leagues.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        elevation: 3,
-                        child: ListTile(
-                          leading: Icon(Icons.sports_soccer),
-                          title: Text(
-                            leagues[index].name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                      subtitle: Text('League ID: ${leagues[index].id}'),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Liga seleccionada: ${leagues[index].name}',
+                            ),
+                            backgroundColor: Colors.indigo,
                           ),
-                          subtitle: Text('League ID: ${leagues[index].id}'),
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Liga seleccionada: ${leagues[index].name}',
-                                ),
-                                backgroundColor: Colors.indigo,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-
-                  Divider(thickness: 2, color: Colors.grey[300]),
-
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Equipos',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        );
+                      },
                     ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: teams.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        elevation: 3,
-                        child: ListTile(
-                          leading: Icon(Icons.group),
-                          title: Text(
-                            teams[index].name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text('Team ID: ${teams[index].id}'),
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Equipo seleccionado: ${teams[index].name}',
-                                ),
-                                backgroundColor: Colors.indigo,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
+
+          Divider(thickness: 2, color: Colors.grey[300]),
+
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Equipos',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+
+          isLoadingTeams
+              ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              : ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: teams.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    elevation: 3,
+                    child: ListTile(
+                      leading: Icon(Icons.group),
+                      title: Text(
+                        teams[index].name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text('Team ID: ${teams[index].id}'),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Equipo seleccionado: ${teams[index].name}',
+                            ),
+                            backgroundColor: Colors.indigo,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+        ],
+      ),
     );
   }
 
@@ -140,7 +131,7 @@ class _MyFieldState extends State<MyField> {
   }
 
   void _loadTeams() {
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 3000), () {
       setState(() {
         teams = [
           DefaultDto(id: '1', name: 'Team A'),
