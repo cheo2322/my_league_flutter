@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
   @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  bool hasMinLength = false;
+  bool hasNumber = false;
+
+  void validatePassword(String password) {
+    setState(() {
+      hasMinLength = password.length >= 8;
+      hasNumber = password.contains(RegExp(r'\d'));
+    });
+  }
+
+  void showAlert(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController confirmPasswordController =
-        TextEditingController();
-
-    bool hasMinLength(String value) => value.length >= 8;
-    bool hasNumber(String value) => value.contains(RegExp(r'\d'));
-
-    void showAlert(String message) {
-      showDialog(
-        context: context,
-        builder:
-            (context) => AlertDialog(
-              title: const Text('Error'),
-              content: Text(message),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Crear Cuenta')),
       body: Padding(
@@ -37,16 +49,17 @@ class SignupPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Correo'),
+              decoration: const InputDecoration(labelText: 'Correo*'),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16.0),
-            TextField(decoration: const InputDecoration(labelText: 'Username')),
+            TextField(decoration: const InputDecoration(labelText: 'Usuario*')),
             const SizedBox(height: 16.0),
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Contraseña'),
+              onChanged: validatePassword,
             ),
             const SizedBox(height: 16.0),
             TextField(
@@ -62,27 +75,18 @@ class SignupPage extends StatelessWidget {
               children: [
                 Text(
                   'Requisitos de la contraseña:',
-                  style:
-                      Theme.of(context).textTheme.titleMedium, // Updated here
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Row(
                   children: [
-                    Icon(
-                      hasMinLength(passwordController.text)
-                          ? Icons.check
-                          : Icons.close,
-                    ),
+                    Icon(hasMinLength ? Icons.check : Icons.close),
                     const SizedBox(width: 8.0),
                     const Text('Mínimo 8 caracteres'),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(
-                      hasNumber(passwordController.text)
-                          ? Icons.check
-                          : Icons.close,
-                    ),
+                    Icon(hasNumber ? Icons.check : Icons.close),
                     const SizedBox(width: 8.0),
                     const Text('Al menos un número'),
                   ],
@@ -94,8 +98,8 @@ class SignupPage extends StatelessWidget {
               onPressed: () {
                 if (passwordController.text.isEmpty ||
                     confirmPasswordController.text.isEmpty ||
-                    !hasMinLength(passwordController.text) ||
-                    !hasNumber(passwordController.text) ||
+                    !hasMinLength ||
+                    !hasNumber ||
                     passwordController.text != confirmPasswordController.text) {
                   showAlert(
                     'Por favor, asegúrate de llenar todos los campos correctamente.',
