@@ -153,8 +153,8 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                 ElevatedButton(
                   onPressed:
                       isButtonEnabled
-                          ? () {
-                            _addTeamToLeague(
+                          ? () async {
+                            await _addTeamToLeague(
                               DefaultDto(
                                 id: null,
                                 name: _teamNameController.text,
@@ -165,6 +165,7 @@ class _NewLeagueTeams extends State<NewLeagueTeams> {
                                 teams.add(response!);
                               });
                             });
+
                             Navigator.pop(context);
                           }
                           : null,
