@@ -18,4 +18,14 @@ class LeagueService {
       return null;
     }
   }
+
+  Future<List<DefaultDto>?> getTeamsFromLeague(String leagueId) async {
+    try {
+      final response = await _dio.get("/leagues/$leagueId/teams");
+      return DefaultDto.fromJsonList(response.data);
+    } catch (e) {
+      print("Error in GET teams");
+      return null;
+    }
+  }
 }
