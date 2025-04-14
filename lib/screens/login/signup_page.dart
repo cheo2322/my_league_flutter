@@ -55,12 +55,16 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCustomTextField('Correo*', TextInputType.emailAddress, null),
+            _buildCustomTextField(
+              'Correo electrónico*',
+              TextInputType.emailAddress,
+              null,
+            ),
             const SizedBox(height: 16.0),
             _buildCustomTextField('Usuario*', TextInputType.text, null),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
-              'Contraseña',
+              'Contraseña*',
               TextInputType.text,
               passwordController,
               obscureText: true,
@@ -68,13 +72,20 @@ class _SignupPageState extends State<SignupPage> {
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
-              'Repetir Contraseña',
+              'Repetir Contraseña*',
               TextInputType.text,
               confirmPasswordController,
               obscureText: true,
               onChanged: validateConfirmPassword,
               errorText: passwordsMatch ? null : 'Las contraseñas no coinciden',
+              trailingIcon:
+                  confirmPasswordController.text.isEmpty
+                      ? null
+                      : passwordsMatch
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : const Icon(Icons.close, color: Colors.red),
             ),
+
             const SizedBox(height: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,16 +96,37 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 Row(
                   children: [
-                    Icon(hasMinLength ? Icons.check : Icons.close),
+                    Icon(
+                      hasMinLength ? Icons.check : Icons.close,
+                      color: hasMinLength ? Colors.green : Colors.red,
+                    ),
                     const SizedBox(width: 8.0),
                     const Text('Mínimo 8 caracteres'),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(hasNumber ? Icons.check : Icons.close),
+                    Icon(
+                      hasNumber ? Icons.check : Icons.close,
+                      color: hasNumber ? Colors.green : Colors.red,
+                    ),
                     const SizedBox(width: 8.0),
                     const Text('Al menos un número'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      confirmPasswordController.text.isNotEmpty
+                          ? (passwordsMatch ? Icons.check : Icons.close)
+                          : Icons.close,
+                      color:
+                          confirmPasswordController.text.isNotEmpty
+                              ? (passwordsMatch ? Colors.green : Colors.red)
+                              : Colors.red,
+                    ),
+                    const SizedBox(width: 8.0),
+                    const Text('Las contraseñas coinciden'),
                   ],
                 ),
               ],
@@ -131,6 +163,7 @@ class _SignupPageState extends State<SignupPage> {
     bool obscureText = false,
     String? errorText,
     Function(String)? onChanged,
+    Widget? trailingIcon,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
@@ -138,16 +171,23 @@ class _SignupPageState extends State<SignupPage> {
         border: Border.all(color: errorText == null ? Colors.grey : Colors.red),
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: InputBorder.none,
-          errorText: errorText,
-        ),
-        onChanged: onChanged,
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              obscureText: obscureText,
+              keyboardType: keyboardType,
+              decoration: InputDecoration(
+                labelText: labelText,
+                border: InputBorder.none,
+                errorText: errorText,
+              ),
+              onChanged: onChanged,
+            ),
+          ),
+          if (trailingIcon != null) trailingIcon,
+        ],
       ),
     );
   }
