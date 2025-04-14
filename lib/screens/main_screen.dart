@@ -14,7 +14,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Partidos')),
+      appBar: AppBar(
+        title: const Text('Partidos'),
+        automaticallyImplyLeading: false,
+      ),
       body: ListView.builder(
         itemCount: _items.length,
         itemBuilder: (context, index) {

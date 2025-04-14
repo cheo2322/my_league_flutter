@@ -44,17 +44,17 @@ class UserDrawer extends StatelessWidget {
 
           final tokenExists = snapshot.data != null;
 
-          return Column(
+          return ListView(
             children: [
               FutureBuilder<String?>(
                 future: _getUsername(),
                 builder: (context, usernameSnapshot) {
                   if (usernameSnapshot.connectionState ==
                       ConnectionState.waiting) {
-                    return Container(
-                      color: Colors.blue,
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
+                    return DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                      ),
                       child: const Center(
                         child: CircularProgressIndicator(color: Colors.white),
                       ),
@@ -62,19 +62,20 @@ class UserDrawer extends StatelessWidget {
                   }
 
                   final username = usernameSnapshot.data;
-                  return Container(
-                    color: Colors.blue,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                  return DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                    ),
                     child: Center(
                       child: Text(
                         username ??
                             'Inicia sesión o crea una cuenta para ver las opciones de usuario',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   );
@@ -83,7 +84,10 @@ class UserDrawer extends StatelessWidget {
 
               if (!tokenExists)
                 ListTile(
-                  leading: const Icon(Icons.login, color: Colors.blue),
+                  leading: Icon(
+                    Icons.login,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   title: const Text('Iniciar sesión'),
                   onTap: () {
                     Navigator.push(
@@ -96,7 +100,10 @@ class UserDrawer extends StatelessWidget {
                 ),
               if (!tokenExists)
                 ListTile(
-                  leading: const Icon(Icons.person_add, color: Colors.blue),
+                  leading: Icon(
+                    Icons.person_add,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   title: const Text('Crear cuenta'),
                   onTap: () {
                     Navigator.push(
@@ -109,11 +116,14 @@ class UserDrawer extends StatelessWidget {
                 ),
 
               ListTile(
-                leading: const Icon(Icons.settings, color: Colors.blue),
+                leading: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).primaryColor,
+                ),
                 title: const Text('Configuraciones'),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Opción 2 seleccionada')),
+                    const SnackBar(content: Text('Configuraciones abiertas')),
                   );
                 },
               ),
