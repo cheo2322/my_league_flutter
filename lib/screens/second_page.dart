@@ -41,7 +41,6 @@ class _MyFieldState extends State<MyField> {
                 IconButton(
                   icon: Icon(Icons.add, color: Colors.indigo),
                   onPressed: () {
-                    // Acción para agregar una nueva liga
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Agregar nueva liga'),
@@ -63,7 +62,6 @@ class _MyFieldState extends State<MyField> {
                   SizedBox(height: 5),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Acción para agregar una nueva liga
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Crear un nuevo torneo'),
@@ -124,7 +122,6 @@ class _MyFieldState extends State<MyField> {
                 IconButton(
                   icon: Icon(Icons.add, color: Colors.indigo),
                   onPressed: () {
-                    // Acción para agregar un nuevo equipo
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Agregar nuevo equipo'),
@@ -146,7 +143,6 @@ class _MyFieldState extends State<MyField> {
                   SizedBox(height: 5),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Acción para agregar un nuevo equipo
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Crear un nuevo equipo'),
