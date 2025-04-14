@@ -5,7 +5,7 @@ import 'package:my_league_flutter/main.dart';
 class LeagueService {
   Future<String?> login(String username, String password) async {
     await Future.delayed(const Duration(seconds: 1));
-    return (username == 'admin' && password == '12345')
+    return (username == 'admin' && password == '1')
         ? 'simulated_token_12345'
         : null;
   }
@@ -29,6 +29,10 @@ class LoginPage extends StatelessWidget {
 
       if (token != null) {
         await secureStorage.write(key: 'auth_token', value: token);
+        await secureStorage.write(
+          key: 'username',
+          value: usernameController.text,
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
