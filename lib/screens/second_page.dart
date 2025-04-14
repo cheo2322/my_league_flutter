@@ -35,7 +35,7 @@ class _MyFieldState extends State<MyField> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Ligas',
+                  'Torneos',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -57,7 +57,29 @@ class _MyFieldState extends State<MyField> {
           isLoadingLeagues
               ? Center(child: CircularProgressIndicator(color: Colors.indigo))
               : leagues.isEmpty
-              ? Center(child: Text('No hay ligas disponibles'))
+              ? Column(
+                children: [
+                  Center(child: Text('Aún no has creado ningun torneo')),
+                  SizedBox(height: 5),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Acción para agregar una nueva liga
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Crear un nuevo torneo'),
+                          backgroundColor: Colors.indigo,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.add),
+                    label: Text('Crear un torneo'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              )
               : ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -118,7 +140,29 @@ class _MyFieldState extends State<MyField> {
           isLoadingTeams
               ? Center(child: CircularProgressIndicator(color: Colors.indigo))
               : teams.isEmpty
-              ? Center(child: Text('No hay equipos disponibles'))
+              ? Column(
+                children: [
+                  Center(child: Text('Aún no has creado ningún equipo')),
+                  SizedBox(height: 5),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Acción para agregar un nuevo equipo
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Crear un nuevo equipo'),
+                          backgroundColor: Colors.indigo,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.add),
+                    label: Text('Crear un equipo'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              )
               : ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
