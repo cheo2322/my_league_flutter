@@ -14,11 +14,18 @@ class _SignupPageState extends State<SignupPage> {
 
   bool hasMinLength = false;
   bool hasNumber = false;
+  bool passwordsMatch = true;
 
   void validatePassword(String password) {
     setState(() {
       hasMinLength = password.length >= 8;
       hasNumber = password.contains(RegExp(r'\d'));
+    });
+  }
+
+  void validateConfirmPassword(String confirmPassword) {
+    setState(() {
+      passwordsMatch = passwordController.text == confirmPassword;
     });
   }
 
@@ -65,9 +72,16 @@ class _SignupPageState extends State<SignupPage> {
             TextField(
               controller: confirmPasswordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Repetir Contraseña',
+                errorText:
+                    passwordsMatch ? null : 'Las contraseñas no coinciden',
               ),
+              onChanged: (value) {
+                validateConfirmPassword(
+                  value,
+                ); // Activar validación al escribir
+              },
             ),
             const SizedBox(height: 16.0),
             Column(
@@ -100,12 +114,11 @@ class _SignupPageState extends State<SignupPage> {
                     confirmPasswordController.text.isEmpty ||
                     !hasMinLength ||
                     !hasNumber ||
-                    passwordController.text != confirmPasswordController.text) {
+                    !passwordsMatch) {
                   showAlert(
                     'Por favor, asegúrate de llenar todos los campos correctamente.',
                   );
                 } else {
-                  // Lógica para crear la cuenta
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Cuenta creada exitosamente')),
                   );
