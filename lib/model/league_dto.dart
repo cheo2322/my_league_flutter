@@ -1,11 +1,12 @@
 class LeagueDto {
+  final String? id;
   final String name;
   final String major;
 
-  LeagueDto({required this.name, required this.major});
+  LeagueDto({required this.id, required this.name, required this.major});
 
   factory LeagueDto.fromJson(Map<String, dynamic> json) {
-    return LeagueDto(name: json['name'], major: json['major']);
+    return LeagueDto(id: json['id'], name: json['name'], major: json['major']);
   }
 
   static List<LeagueDto> fromJsonList(List<dynamic> jsonList) {
@@ -13,6 +14,6 @@ class LeagueDto {
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'major': major};
+    return {'id': id, 'name': name, 'major': major};
   }
 }
