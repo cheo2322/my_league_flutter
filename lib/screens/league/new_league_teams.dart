@@ -127,7 +127,14 @@ class _NewLeagueTeamsState extends State<NewLeagueTeams> {
                         });
                       }
                     },
-                    child: const Text("Agregar equipo"),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.add),
+                        const SizedBox(width: 8),
+                        const Text("Agregar equipo"), // Texto
+                      ],
+                    ),
                   ),
                 ],
               ),

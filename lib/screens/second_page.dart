@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
+import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class MyField extends StatefulWidget {
@@ -41,11 +42,9 @@ class _MyFieldState extends State<MyField> {
                 IconButton(
                   icon: Icon(Icons.add, color: Colors.indigo),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Agregar nueva liga'),
-                        backgroundColor: Colors.indigo,
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NewLeague()),
                     );
                   },
                 ),
@@ -62,11 +61,9 @@ class _MyFieldState extends State<MyField> {
                   SizedBox(height: 5),
                   ElevatedButton.icon(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Crear un nuevo torneo'),
-                          backgroundColor: Colors.indigo,
-                        ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NewLeague()),
                       );
                     },
                     icon: Icon(Icons.add),
@@ -197,7 +194,7 @@ class _MyFieldState extends State<MyField> {
     try {
       final response = await leagueService.getLeagues();
       setState(() {
-        leagues = response.sublist(0, 4);
+        leagues = response;
         isLoadingLeagues = false;
       });
     } catch (error) {
