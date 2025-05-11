@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
+import 'package:my_league_flutter/screens/team/new_team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
@@ -68,11 +70,81 @@ class _LeagueState extends State<League> {
                   ],
                 ),
               ),
-              body: const TabBarView(
+              body: TabBarView(
                 children: [
-                  Center(child: Text('Equipos')),
-                  Center(child: Text('Partidos')),
-                  Center(child: Text('Configuraciones')),
+                  // Página de Equipos con lista y botón al final
+                  Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: 3, // Mock con 3 equipos
+                          itemBuilder: (context, index) {
+                            final mockEquipos = [
+                              {"id": "1", "name": "Tigres FC"},
+                              {"id": "2", "name": "Leones United"},
+                              {"id": "3", "name": "Águilas Doradas"},
+                            ];
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              elevation: 3,
+                              child: ListTile(
+                                leading: const Icon(Icons.sports_soccer),
+                                title: Text(
+                                  mockEquipos[index]["name"]!,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'ID: ${mockEquipos[index]["id"]}',
+                                ),
+                                onTap: () {
+                                  print(
+                                    'Equipo seleccionado: ${mockEquipos[index]["name"]}',
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => NewTeam(
+                                      leagueDto: DefaultDto(
+                                        id: league!.id,
+                                        name: league!.name,
+                                      ),
+                                    ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                          label: const Text('Agregar un equipo'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.indigo,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Página de Partidos con contenido de ejemplo
+                  Center(child: Text('Lista de partidos próximamente...')),
+
+                  // Página de Configuraciones con contenido ficticio
+                  Center(child: Text('Opciones y ajustes aquí')),
                 ],
               ),
             ),
