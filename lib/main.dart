@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFF4CAF50), // Verde césped profesional
         leading:
             _isSearching
                 ? IconButton(
@@ -106,6 +107,8 @@ class _HomePageState extends State<HomePage> {
                       ? 'Mi cancha'
                       : 'Página de Notificaciones',
                 ),
+        elevation: 3,
+        centerTitle: true,
       ),
       drawer: UserDrawer(),
       body: _pages[_selectedIndex],
