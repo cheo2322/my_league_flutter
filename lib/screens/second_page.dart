@@ -37,7 +37,7 @@ class _MyFieldState extends State<MyField> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Torneos',
+                  'MisTorneos',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -114,7 +114,7 @@ class _MyFieldState extends State<MyField> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Equipos',
+                  'Mis Equipos',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
