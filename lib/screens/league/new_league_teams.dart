@@ -132,7 +132,7 @@ class _NewLeagueTeamsState extends State<NewLeagueTeams> {
                       children: [
                         const Icon(Icons.add),
                         const SizedBox(width: 8),
-                        const Text("Agregar equipo"), // Texto
+                        const Text("Agregar equipo"),
                       ],
                     ),
                   ),
@@ -217,7 +217,7 @@ class _NewLeagueTeamsState extends State<NewLeagueTeams> {
             return AlertDialog(
               title: Text('¿Salir?'),
               content: Text(
-                'No te preocupes, puedes continuar editando tu torneo después. Sólo buscalo en la sección \'Mi torneo\' desde la pantalla principal.',
+                'No te preocupes, puedes continuar editando tu torneo después. Sólo buscalo en la sección \'Mi cancha\' desde la pantalla principal.',
               ),
               actions: [
                 TextButton(

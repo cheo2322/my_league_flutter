@@ -2,7 +2,7 @@ const Map<String, List<String>> ecuadorLocations = {
   'Pichincha': ['Quito', 'Cayambe', 'Rumiñahui'],
   'Guayas': ['Guayaquil', 'Daule', 'Samborondón'],
   'Azuay': ['Cuenca', 'Gualaceo', 'Paute'],
-  'Imbabura': ['Ibarra', 'Otavalo', 'Cotacachi'],
+  'Imbabura': ['Ibarra', 'Otavalo', 'Cotacachi', 'Antonio Ante', 'Urcuquí'],
   'Manabí': ['Portoviejo', 'Manta', 'Montecristi'],
   'El Oro': ['Machala', 'Pasaje', 'Santa Rosa'],
   'Loja': ['Loja', 'Vilcabamba', 'Catamayo'],

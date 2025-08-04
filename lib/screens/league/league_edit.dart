@@ -18,6 +18,9 @@ class _LeagueState extends State<League> {
 
   LeagueDto? league;
   bool isLoading = true;
+  bool isLoadingTeams = true;
+
+  List<DefaultDto> teams = [];
 
   Future<LeagueDto?> _getLeague(String leagueId) async {
     try {
@@ -35,9 +38,27 @@ class _LeagueState extends State<League> {
     }
   }
 
+  Future<List<DefaultDto>?> _getTeamsFromLeague(String leagueId) async {
+    try {
+      final response = await leagueService.getTeamsFromLeague(leagueId);
+
+      if (response != null) {
+        print("Teams retrieved");
+        return response;
+      } else {
+        print("Error retrieving teams");
+        return null;
+      }
+    } catch (e) {
+      print("Error in _getTeamsFromLeague: $e");
+      return null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
     _getLeague(widget.leagueId).then((response) {
       if (mounted) {
         setState(() {
@@ -45,6 +66,15 @@ class _LeagueState extends State<League> {
           isLoading = false;
         });
       }
+    });
+
+    _getTeamsFromLeague(widget.leagueId).then((response) {
+      setState(() {
+        if (response != null) {
+          teams = response;
+          isLoadingTeams = false;
+        }
+      });
     });
   }
 
@@ -70,90 +100,99 @@ class _LeagueState extends State<League> {
                   ],
                 ),
               ),
-              body: TabBarView(
+              body: Stack(
                 children: [
-                  // Página de Equipos con lista y botón al final
-                  Column(
+                  TabBarView(
                     children: [
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: 3, // Mock con 3 equipos
-                          itemBuilder: (context, index) {
-                            final mockEquipos = [
-                              {"id": "1", "name": "Tigres FC"},
-                              {"id": "2", "name": "Leones United"},
-                              {"id": "3", "name": "Águilas Doradas"},
-                            ];
-
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
+                      // Teams tab
+                      Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: teams.length,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      elevation: 3,
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.sports_soccer,
+                                        ),
+                                        title: Text(
+                                          teams[index].name,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          'ID: ${teams[index].id!}',
+                                        ),
+                                        onTap: () {
+                                          print(
+                                            'Equipo seleccionado: ${teams[index].name}',
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                              elevation: 3,
-                              child: ListTile(
-                                leading: const Icon(Icons.sports_soccer),
-                                title: Text(
-                                  mockEquipos[index]["name"]!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => NewTeam(
+                                              leagueDto: DefaultDto(
+                                                id: league!.id,
+                                                name: league!.name,
+                                              ),
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Agregar un equipo'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.indigo,
+                                    foregroundColor: Colors.white,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  'ID: ${mockEquipos[index]["id"]}',
-                                ),
-                                onTap: () {
-                                  print(
-                                    'Equipo seleccionado: ${mockEquipos[index]["name"]}',
-                                  );
-                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => NewTeam(
-                                      leagueDto: DefaultDto(
-                                        id: league!.id,
-                                        name: league!.name,
-                                      ),
-                                    ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.add),
-                          label: const Text('Agregar un equipo'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.indigo,
-                            foregroundColor: Colors.white,
+                            ],
                           ),
-                        ),
+                          if (isLoadingTeams)
+                            Container(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        ],
                       ),
+
+                      // Página de Partidos con contenido de ejemplo
+                      Center(child: Text('Lista de partidos próximamente...')),
+
+                      // Página de Configuraciones con contenido ficticio
+                      Center(child: Text('Opciones y ajustes aquí')),
                     ],
                   ),
-
-                  // Página de Partidos con contenido de ejemplo
-                  Center(child: Text('Lista de partidos próximamente...')),
-
-                  // Página de Configuraciones con contenido ficticio
-                  Center(child: Text('Opciones y ajustes aquí')),
                 ],
               ),
             ),
             if (isLoading)
               Positioned.fill(
                 child: Container(
-                  color: Colors.black.withValues(
-                    alpha: 0.5,
-                  ), // Fondo semi-transparente
+                  color: Colors.black.withValues(alpha: 0.5),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
               ),
