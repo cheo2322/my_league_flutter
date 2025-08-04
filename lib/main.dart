@@ -72,41 +72,14 @@ class _HomePageState extends State<HomePage> {
                   },
                 )
                 : null,
-        title:
-            _selectedIndex == 0
-                ? _isSearching
-                    ? TextField(
-                      focusNode: _searchFocusNode,
-                      decoration: const InputDecoration(
-                        hintText: 'Buscar...',
-                        border: InputBorder.none,
-                      ),
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        // Lógica de búsqueda
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Buscando: $value')),
-                        );
-                      },
-                    )
-                    : Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isSearching = true;
-                            });
-                          },
-                          child: const Icon(Icons.search),
-                        ),
-                      ],
-                    )
-                : Text(
-                  _selectedIndex == 1
-                      ? 'Mi cancha'
-                      : 'Página de Notificaciones',
-                ),
+        // TODO: Add logic for Search bar
+        title: Text(
+          _selectedIndex == 0
+              ? 'Partidos'
+              : _selectedIndex == 1
+              ? 'Mi cancha'
+              : 'Notificaciones',
+        ),
         elevation: 3,
         centerTitle: true,
       ),
