@@ -56,4 +56,14 @@ class LeagueService {
       return [];
     }
   }
+
+  Future<LeagueDto?> getLeague(String leagueId) async {
+    try {
+      final response = await _dio.get("/leagues/$leagueId");
+      return LeagueDto.fromJson(response.data);
+    } catch (e) {
+      print("Error in GET league: $e");
+      return null;
+    }
+  }
 }

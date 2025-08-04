@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
-import 'package:my_league_flutter/screens/new_league/new_league_teams.dart';
+import 'package:my_league_flutter/screens/league/new_league_teams.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 import 'package:my_league_flutter/constants/constants.dart';
 
@@ -269,6 +269,7 @@ class _NewLeagueState extends State<NewLeague> {
                             String? leagueId;
                             _createLeague(
                                   LeagueDto(
+                                    id: null,
                                     name: nameController.text,
                                     major: majorController.text,
                                   ),

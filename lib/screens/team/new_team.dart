@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/model/default_dto.dart';
 
 class NewTeam extends StatefulWidget {
-  final String leagueId;
+  final DefaultDto leagueDto;
 
-  const NewTeam({super.key, required this.leagueId});
+  const NewTeam({super.key, required this.leagueDto});
 
   @override
   State<NewTeam> createState() => _NewTeam();
@@ -45,6 +46,10 @@ class _NewTeam extends State<NewTeam> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text(
+              'Este equipo será agregado al torneo: ${widget.leagueDto.name}',
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _field1Controller,
               decoration: const InputDecoration(labelText: 'Campo 1'),
@@ -59,7 +64,7 @@ class _NewTeam extends State<NewTeam> {
               onPressed:
                   isButtonEnabled
                       ? () {
-                        Navigator.pop(context); // Volver a la página anterior
+                        Navigator.pop(context);
                       }
                       : null,
               child: const Text('Crear'),
