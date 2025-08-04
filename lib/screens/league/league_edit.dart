@@ -19,6 +19,8 @@ class _LeagueState extends State<League> {
   LeagueDto? league;
   bool isLoading = true;
   bool isLoadingTeams = true;
+  final TextEditingController _teamNameController = TextEditingController();
+  bool isButtonEnabled = false;
 
   List<DefaultDto> teams = [];
 
@@ -51,6 +53,28 @@ class _LeagueState extends State<League> {
       }
     } catch (e) {
       print("Error in _getTeamsFromLeague: $e");
+      return null;
+    }
+  }
+
+  // TODO: Make it a single implementation with new_league_teams
+  // to avoid repeated code
+  Future<DefaultDto?> _addTeamToLeague(
+    DefaultDto teamDto,
+    String leagueId,
+  ) async {
+    try {
+      final response = await leagueService.addTeamToLeague(teamDto, leagueId);
+
+      if (response != null) {
+        print("Team added");
+        return response;
+      } else {
+        print("Error adding team");
+        return null;
+      }
+    } catch (e) {
+      print("Error in _addTeamToLeague: $e");
       return null;
     }
   }
@@ -144,26 +168,29 @@ class _LeagueState extends State<League> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    Navigator.push(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    final result = await _showDialogNewTeam(
                                       context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => NewTeam(
-                                              leagueDto: DefaultDto(
-                                                id: league!.id,
-                                                name: league!.name,
-                                              ),
-                                            ),
-                                      ),
                                     );
+
+                                    if (result == true) {
+                                      _getTeamsFromLeague(widget.leagueId).then(
+                                        (response) {
+                                          setState(() {
+                                            teams = response ?? [];
+                                          });
+                                        },
+                                      );
+                                    }
                                   },
-                                  icon: const Icon(Icons.add),
-                                  label: const Text('Agregar un equipo'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.indigo,
-                                    foregroundColor: Colors.white,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.add),
+                                      const SizedBox(width: 8),
+                                      const Text("Agregar un equipo"),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -199,6 +226,64 @@ class _LeagueState extends State<League> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _showDialogNewTeam(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Nuevo Equipo"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _teamNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nombre*',
+                      hintText: 'Escribe el nombre del equipo',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (text) {
+                      setState(() {
+                        isButtonEnabled = text.trim().length > 2;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed:
+                      isButtonEnabled
+                          ? () async {
+                            await _addTeamToLeague(
+                              DefaultDto(
+                                id: null,
+                                name: _teamNameController.text,
+                              ),
+                              widget.leagueId,
+                            );
+
+                            Navigator.pop(context, true);
+                          }
+                          : null,
+                  child: const Text('Crear'), // Missing loader
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cerrar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
