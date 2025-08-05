@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
+import 'package:my_league_flutter/screens/match/match_card.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -9,7 +10,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<String> _items = ['Elemento 1', 'Elemento 2', 'Elemento 3'];
+  final List<String> _items = ['Elemento 1'];
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +18,10 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView.builder(
         itemCount: _items.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_items[index]),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${_items[index]} seleccionado')),
-              );
-            },
-          );
+          // Por ahora solo mostramos la primera tarjeta personalizada
+          if (index == 0) {
+            return MatchCard();
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
