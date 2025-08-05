@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
-import 'package:my_league_flutter/screens/team/new_team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
@@ -19,7 +18,7 @@ class _LeagueState extends State<League> {
   LeagueDto? league;
   bool isLoading = true;
   bool isLoadingTeams = true;
-  final TextEditingController _teamNameController = TextEditingController();
+  TextEditingController teamNameController = TextEditingController();
   bool isButtonEnabled = false;
 
   List<DefaultDto> teams = [];
@@ -179,6 +178,7 @@ class _LeagueState extends State<League> {
                                         (response) {
                                           setState(() {
                                             teams = response ?? [];
+                                            teamNameController.clear();
                                           });
                                         },
                                       );
@@ -241,7 +241,7 @@ class _LeagueState extends State<League> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    controller: _teamNameController,
+                    controller: teamNameController,
                     decoration: const InputDecoration(
                       labelText: 'Nombre*',
                       hintText: 'Escribe el nombre del equipo',
@@ -263,7 +263,7 @@ class _LeagueState extends State<League> {
                             await _addTeamToLeague(
                               DefaultDto(
                                 id: null,
-                                name: _teamNameController.text,
+                                name: teamNameController.text,
                               ),
                               widget.leagueId,
                             );
