@@ -19,10 +19,12 @@ class _LeagueState extends State<League> {
   LeagueDto? league;
   bool isLoading = true;
   bool isLoadingTeams = true;
+  bool isLoadingMatches = true;
   TextEditingController teamNameController = TextEditingController();
   bool isButtonEnabled = false;
 
   List<DefaultDto> teams = [];
+  String selectedValue = 'Opción 1';
 
   Future<LeagueDto?> _getLeague(String leagueId) async {
     try {
@@ -118,8 +120,8 @@ class _LeagueState extends State<League> {
                 ),
                 bottom: const TabBar(
                   tabs: [
-                    Tab(text: 'Equipos'),
                     Tab(text: 'Partidos'),
+                    Tab(text: 'Equipos'),
                     Tab(text: 'Configuraciones'),
                   ],
                 ),
@@ -128,6 +130,42 @@ class _LeagueState extends State<League> {
                 children: [
                   TabBarView(
                     children: [
+                      // Matches tab
+                      Stack(
+                        children: [
+                          if (!isLoadingMatches)
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: DropdownButton<String>(
+                                value: selectedValue,
+                                isExpanded: true,
+                                items:
+                                    ['Opción 1', 'Opción 2', 'Opción 3']
+                                        .map(
+                                          (value) => DropdownMenuItem(
+                                            value: value,
+                                            child: Center(child: Text(value)),
+                                          ),
+                                        )
+                                        .toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedValue = newValue!;
+                                  });
+                                },
+                              ),
+                            )
+                          else
+                            Container(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        ],
+                      ),
+
                       // Teams tab
                       Stack(
                         children: [
@@ -212,9 +250,6 @@ class _LeagueState extends State<League> {
                             ),
                         ],
                       ),
-
-                      // Página de Partidos con contenido de ejemplo
-                      Center(child: Text('Lista de partidos próximamente...')),
 
                       // Página de Configuraciones con contenido ficticio
                       Center(child: Text('Opciones y ajustes aquí')),
