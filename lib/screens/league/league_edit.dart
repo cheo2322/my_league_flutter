@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
+import 'package:my_league_flutter/screens/teams/team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
@@ -156,8 +157,14 @@ class _LeagueState extends State<League> {
                                           'ID: ${teams[index].id!}',
                                         ),
                                         onTap: () {
-                                          print(
-                                            'Equipo seleccionado: ${teams[index].name}',
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => Team(
+                                                    teamDto: teams[index],
+                                                  ),
+                                            ),
                                           );
                                         },
                                       ),
