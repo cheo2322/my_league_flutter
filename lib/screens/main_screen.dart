@@ -10,19 +10,38 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<String> _items = ['Elemento 1'];
+  final List<Map<String, dynamic>> _matches = [
+    {
+      'team1': 'SAN ANTONIO DE IMBAYA',
+      'team2': 'ESCUELA DE FUTBOL 9 DE FEBRERO',
+      'matchTime': '9:00',
+      'isFinished': false,
+    },
+    {
+      'team1': 'ESTUDIANTES DE LA PLATA',
+      'team2': 'CHACARITAS',
+      'matchTime': '11h00',
+      'isFinished': true,
+      'team1Result': 5,
+      'team2Result': 3,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (context, index) {
-          // Por ahora solo mostramos la primera tarjeta personalizada
-          if (index == 0) {
-            return MatchCard();
-          }
-        },
+      body: ListView(
+        children:
+            _matches.map((match) {
+              return MatchCard(
+                team1: match['team1'],
+                team2: match['team2'],
+                matchTime: match['matchTime'],
+                isFinished: match['isFinished'] ?? false,
+                team1Result: match['team1Result'],
+                team2Result: match['team2Result'],
+              );
+            }).toList(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
