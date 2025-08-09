@@ -14,6 +14,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final List<MatchDto> _matches = [];
 
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -27,18 +29,24 @@ class _MainScreenState extends State<MainScreen> {
     print("Fetched matches: $matches");
     setState(() {
       _matches.addAll(matches);
+      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children:
-            _matches.map((match) {
-              return MatchCard(match: match);
-            }).toList(),
-      ),
+      body:
+          isLoading
+              ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              : _matches.isEmpty
+              ? Center(child: Text("No hay partidos disponibles"))
+              : ListView(
+                children:
+                    _matches.map((match) {
+                      return MatchCard(match: match);
+                    }).toList(),
+              ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
