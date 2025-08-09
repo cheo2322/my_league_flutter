@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/model/match_dto.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/screens/match/match_card.dart';
+import 'package:my_league_flutter/web/match_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -10,22 +12,23 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<Map<String, dynamic>> _matches = [
-    {
-      'team1': 'SAN ANTONIO DE IMBAYA',
-      'team2': 'ESCUELA DE FUTBOL 9 DE FEBRERO',
-      'matchTime': '9:00',
-      'isFinished': false,
-    },
-    {
-      'team1': 'ESTUDIANTES DE LA PLATA',
-      'team2': 'CHACARITAS',
-      'matchTime': '11h00',
-      'isFinished': true,
-      'team1Result': 5,
-      'team2Result': 3,
-    },
-  ];
+  final List<MatchDto> _matches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMatches();
+  }
+
+  Future<void> _fetchMatches() async {
+    final service = MatchService();
+    final matches = await service.getMatches();
+
+    print("Fetched matches: $matches");
+    setState(() {
+      _matches.addAll(matches);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +36,7 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView(
         children:
             _matches.map((match) {
-              return MatchCard(
-                team1: match['team1'],
-                team2: match['team2'],
-                matchTime: match['matchTime'],
-                isFinished: match['isFinished'] ?? false,
-                team1Result: match['team1Result'],
-                team2Result: match['team2Result'],
-              );
+              return MatchCard(match: match);
             }).toList(),
       ),
       floatingActionButton: FloatingActionButton(

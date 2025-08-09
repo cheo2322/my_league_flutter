@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/model/match_dto.dart';
 
 class MatchCard extends StatelessWidget {
-  final String team1;
-  final String team2;
-  final String matchTime;
-  final bool isFinished;
-  final int? team1Result;
-  final int? team2Result;
+  final MatchDto match;
 
-  const MatchCard({
-    super.key,
-    required this.team1,
-    required this.team2,
-    required this.matchTime,
-    this.isFinished = false,
-    this.team1Result,
-    this.team2Result,
-  });
+  const MatchCard({super.key, required this.match});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +23,7 @@ class MatchCard extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        team1,
+                        match.homeTeam,
                         style: const TextStyle(fontSize: 12),
                         softWrap: true,
                         maxLines: 2,
@@ -50,9 +38,9 @@ class MatchCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  isFinished
-                      ? '${team1Result.toString()} - ${team2Result.toString()}'
-                      : matchTime,
+                  match.status == "FINISHED"
+                      ? '${match.homeResult} - ${match.visitResult}'
+                      : match.time,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -67,7 +55,7 @@ class MatchCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Flexible(
                       child: Text(
-                        team2,
+                        match.visitTeam,
                         style: const TextStyle(fontSize: 12),
                         softWrap: true,
                         maxLines: 2,
