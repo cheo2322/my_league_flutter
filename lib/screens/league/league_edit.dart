@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
+import 'package:my_league_flutter/screens/phase/phase.dart';
 import 'package:my_league_flutter/screens/teams/team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
@@ -140,14 +141,15 @@ class _LeagueState extends State<League> {
                   ],
                 ),
               ),
-              body: Stack(
+              body: TabBarView(
                 children: [
-                  TabBarView(
+                  // Phases tab
+                  Stack(
                     children: [
-                      // Phases tab
-                      Stack(
-                        children: [
-                          if (!isLoadingPhases)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
                             Expanded(
                               child: ListView.builder(
                                 itemCount: phases.length,
@@ -159,7 +161,7 @@ class _LeagueState extends State<League> {
                                     ),
                                     elevation: 3,
                                     child: ListTile(
-                                      leading: const Icon(Icons.flag),
+                                      leading: const Icon(Icons.calendar_month),
                                       title: Text(
                                         phases[index].name,
                                         style: const TextStyle(
@@ -168,112 +170,126 @@ class _LeagueState extends State<League> {
                                       ),
                                       subtitle: Text(phases[index].status),
                                       onTap: () {
-                                        // Navigate to phase details if needed
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => Phase(
+                                                  phaseDto: phases[index],
+                                                ),
+                                          ),
+                                        );
                                       },
                                     ),
                                   );
                                 },
                               ),
-                            )
-                          else
-                            Container(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                final result = await _showDialogNewTeam(
+                                  context,
+                                );
+                                if (result == true) {
+                                  _getTeamsFromLeague(widget.leagueId).then((
+                                    response,
+                                  ) {
+                                    setState(() {
+                                      teams = response ?? [];
+                                    });
+                                  });
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.add),
+                                  const SizedBox(width: 8),
+                                  const Text("Agregar fase"),
+                                ],
                               ),
                             ),
-                        ],
+                          ],
+                        ),
                       ),
 
-                      // Teams tab
-                      Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: teams.length,
-                                  itemBuilder: (context, index) {
-                                    return Card(
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 5,
-                                      ),
-                                      elevation: 3,
-                                      child: ListTile(
-                                        leading: const Icon(
-                                          Icons.sports_soccer,
-                                        ),
-                                        title: Text(
-                                          teams[index].name,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                          'ID: ${teams[index].id!}',
-                                        ),
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) => Team(
-                                                    teamDto: teams[index],
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    final result = await _showDialogNewTeam(
-                                      context,
-                                    );
-
-                                    if (result == true) {
-                                      _getTeamsFromLeague(widget.leagueId).then(
-                                        (response) {
-                                          setState(() {
-                                            teams = response ?? [];
-                                            teamNameController.clear();
-                                          });
-                                        },
-                                      );
-                                    }
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.add),
-                                      const SizedBox(width: 8),
-                                      const Text("Agregar un equipo"),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                      if (isLoadingPhases)
+                        Container(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
                           ),
-                          if (isLoadingTeams)
-                            Container(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                        ],
-                      ),
-
-                      // Página de Configuraciones con contenido ficticio
-                      Center(child: Text('Opciones y ajustes aquí')),
+                        ),
                     ],
                   ),
+
+                  // Teams tab
+                  Stack(
+                    children: [
+                      Column(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: teams.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  elevation: 3,
+                                  child: ListTile(
+                                    leading: const Icon(Icons.sports_soccer),
+                                    title: Text(
+                                      teams[index].name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text('ID: ${teams[index].id!}'),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  Team(teamDto: teams[index]),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton(
+                              onPressed: () async {},
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.add),
+                                  const SizedBox(width: 8),
+                                  const Text("Agregar un equipo"),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (isLoadingTeams)
+                        Container(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                    ],
+                  ),
+
+                  // Página de Configuraciones con contenido ficticio
+                  Center(child: Text('Opciones y ajustes aquí')),
                 ],
               ),
             ),
