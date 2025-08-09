@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
+import 'package:my_league_flutter/model/phase_status.dart';
 
 class LeagueService {
   final Dio _dio;
@@ -64,6 +65,16 @@ class LeagueService {
     } catch (e) {
       print("Error in GET league: $e");
       return null;
+    }
+  }
+
+  Future<List<PhaseDto>> getLeaguePhases(String leagueId) async {
+    try {
+      final response = await _dio.get("/leagues/$leagueId/phases");
+      return PhaseDto.fromJsonList(response.data);
+    } catch (e) {
+      print("Error in GET league phases: $e");
+      return [];
     }
   }
 }

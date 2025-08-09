@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
+import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/screens/teams/team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
+// TODO: Retrieve DefaultDto for League
 class League extends StatefulWidget {
   final String leagueId;
 
@@ -19,10 +21,11 @@ class _LeagueState extends State<League> {
   LeagueDto? league;
   bool isLoading = true;
   bool isLoadingTeams = true;
-  bool isLoadingMatches = true;
+  bool isLoadingPhases = true;
   TextEditingController teamNameController = TextEditingController();
   bool isButtonEnabled = false;
 
+  List<PhaseDto> phases = [];
   List<DefaultDto> teams = [];
   String selectedValue = 'Opción 1';
 
@@ -81,6 +84,17 @@ class _LeagueState extends State<League> {
     }
   }
 
+  Future<List<PhaseDto>?> _getLeaguePhases(String leagueId) async {
+    try {
+      final response = await leagueService.getLeaguePhases(leagueId);
+      print("League phases retrieved");
+      return response;
+    } catch (e) {
+      print("Error in _getLeaguePhases: $e");
+      return [];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -94,13 +108,13 @@ class _LeagueState extends State<League> {
       }
     });
 
-    _getTeamsFromLeague(widget.leagueId).then((response) {
-      setState(() {
-        if (response != null) {
-          teams = response;
-          isLoadingTeams = false;
-        }
-      });
+    _getLeaguePhases(widget.leagueId).then((response) {
+      if (mounted) {
+        setState(() {
+          phases = response ?? [];
+          isLoadingPhases = false;
+        });
+      }
     });
   }
 
@@ -120,7 +134,7 @@ class _LeagueState extends State<League> {
                 ),
                 bottom: const TabBar(
                   tabs: [
-                    Tab(text: 'Partidos'),
+                    Tab(text: 'Fases'),
                     Tab(text: 'Equipos'),
                     Tab(text: 'Configuraciones'),
                   ],
@@ -130,29 +144,34 @@ class _LeagueState extends State<League> {
                 children: [
                   TabBarView(
                     children: [
-                      // Matches tab
+                      // Phases tab
                       Stack(
                         children: [
-                          if (!isLoadingMatches)
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: DropdownButton<String>(
-                                value: selectedValue,
-                                isExpanded: true,
-                                items:
-                                    ['Opción 1', 'Opción 2', 'Opción 3']
-                                        .map(
-                                          (value) => DropdownMenuItem(
-                                            value: value,
-                                            child: Center(child: Text(value)),
-                                          ),
-                                        )
-                                        .toList(),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedValue = newValue!;
-                                  });
+                          if (!isLoadingPhases)
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: phases.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    elevation: 3,
+                                    child: ListTile(
+                                      leading: const Icon(Icons.flag),
+                                      title: Text(
+                                        phases[index].name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(phases[index].status),
+                                      onTap: () {
+                                        // Navigate to phase details if needed
+                                      },
+                                    ),
+                                  );
                                 },
                               ),
                             )
