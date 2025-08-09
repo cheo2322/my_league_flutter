@@ -26,7 +26,6 @@ class _MainScreenState extends State<MainScreen> {
     final service = MatchService();
     final matches = await service.getMatches();
 
-    print("Fetched matches: $matches");
     setState(() {
       _matches.addAll(matches);
       isLoading = false;

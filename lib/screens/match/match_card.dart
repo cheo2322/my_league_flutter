@@ -6,6 +6,22 @@ class MatchCard extends StatelessWidget {
 
   const MatchCard({super.key, required this.match});
 
+  final TextStyle winnerStyle = const TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.bold,
+    color: Colors.green,
+  );
+
+  final TextStyle normalStyle = const TextStyle(fontSize: 12);
+
+  bool isHomeWinner(MatchDto match) =>
+      match.status == "FINISHED" &&
+      (match.homeResult ?? 0) > (match.visitResult ?? 0);
+
+  bool isVisitWinner(MatchDto match) =>
+      match.status == "FINISHED" &&
+      (match.homeResult ?? 0) < (match.visitResult ?? 0);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -14,7 +30,7 @@ class MatchCard extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 56),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
               Expanded(
@@ -24,7 +40,7 @@ class MatchCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         match.homeTeam,
-                        style: const TextStyle(fontSize: 12),
+                        style: isHomeWinner(match) ? winnerStyle : normalStyle,
                         softWrap: true,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -36,15 +52,37 @@ class MatchCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  match.status == "FINISHED"
-                      ? '${match.homeResult} - ${match.visitResult}'
-                      : match.time,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      match.date,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      match.status != "SCHEDULED"
+                          ? '${match.homeResult} - ${match.visitResult}'
+                          : match.time,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (match.status != "SCHEDULED")
+                      Text(
+                        match.status,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Expanded(
@@ -56,7 +94,7 @@ class MatchCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         match.visitTeam,
-                        style: const TextStyle(fontSize: 12),
+                        style: isVisitWinner(match) ? winnerStyle : normalStyle,
                         softWrap: true,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
