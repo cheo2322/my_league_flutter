@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_league_flutter/model/match_dto.dart';
+import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
-import 'package:my_league_flutter/screens/match/match_card.dart';
-import 'package:my_league_flutter/web/match_service.dart';
+import 'package:my_league_flutter/screens/main/round_card.dart';
+import 'package:my_league_flutter/web/league_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,24 +12,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<MatchDto> _matches = [];
+  final List<RoundDto> _rounds = [];
 
   bool isLoading = true;
+
+  Future<void> _fetchRounds() async {
+    final service = LeagueService();
+    final rounds = await service.getMainPage();
+
+    setState(() {
+      _rounds.addAll(rounds);
+      isLoading = false;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchMatches();
-  }
-
-  Future<void> _fetchMatches() async {
-    final service = MatchService();
-    final matches = await service.getMatches();
-
-    setState(() {
-      _matches.addAll(matches);
-      isLoading = false;
-    });
+    _fetchRounds();
   }
 
   @override
@@ -37,14 +37,23 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body:
           isLoading
-              ? Center(child: CircularProgressIndicator(color: Colors.indigo))
-              : _matches.isEmpty
-              ? Center(child: Text("No hay partidos disponibles"))
-              : ListView(
-                children:
-                    _matches.map((match) {
-                      return MatchCard(match: match);
-                    }).toList(),
+              ? const Center(
+                child: CircularProgressIndicator(color: Colors.indigo),
+              )
+              : _rounds.isEmpty
+              ? const Center(child: Text("No hay partidos disponibles"))
+              : ListView.builder(
+                itemCount: _rounds.length,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: RoundCard(round: _rounds[index]),
+                  );
+                },
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

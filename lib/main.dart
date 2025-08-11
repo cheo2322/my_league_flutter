@@ -60,14 +60,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4CAF50), // Verde césped profesional
+        backgroundColor: Colors.teal,
         leading:
             _isSearching
                 ? IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     setState(() {
-                      _isSearching = false; // Cerrar la barra de búsqueda.
+                      _isSearching = false;
                     });
                   },
                 )

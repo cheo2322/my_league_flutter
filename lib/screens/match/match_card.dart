@@ -7,12 +7,12 @@ class MatchCard extends StatelessWidget {
   const MatchCard({super.key, required this.match});
 
   final TextStyle winnerStyle = const TextStyle(
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: FontWeight.bold,
     color: Colors.green,
   );
 
-  final TextStyle normalStyle = const TextStyle(fontSize: 12);
+  final TextStyle normalStyle = const TextStyle(fontSize: 11);
 
   bool isHomeWinner(MatchDto match) =>
       match.status == "FINISHED" &&
@@ -24,87 +24,84 @@ class MatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 56),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        match.homeTeam,
-                        style: isHomeWinner(match) ? winnerStyle : normalStyle,
-                        softWrap: true,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Text(
+                      match.homeTeam,
+                      style: isHomeWinner(match) ? winnerStyle : normalStyle,
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.right,
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(Icons.sports_soccer, size: 16),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.sports_soccer, size: 16),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    match.date,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    match.status != "SCHEDULED"
+                        ? '${match.homeResult} - ${match.visitResult}'
+                        : match.time,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (match.status != "SCHEDULED")
                     Text(
-                      match.date,
+                      match.status,
                       style: const TextStyle(
                         fontSize: 9,
-                        color: Colors.grey,
+                        color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      match.status != "SCHEDULED"
-                          ? '${match.homeResult} - ${match.visitResult}'
-                          : match.time,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (match.status != "SCHEDULED")
-                      Text(
-                        match.status,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.sports_soccer, size: 16),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        match.visitTeam,
-                        style: isVisitWinner(match) ? winnerStyle : normalStyle,
-                        softWrap: true,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(Icons.sports_soccer, size: 16),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      match.visitTeam,
+                      style: isVisitWinner(match) ? winnerStyle : normalStyle,
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

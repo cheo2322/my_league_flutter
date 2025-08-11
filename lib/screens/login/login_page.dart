@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/main.dart';
 
-class LeagueService {
+class LoginService {
   Future<String?> login(String username, String password) async {
     await Future.delayed(const Duration(seconds: 1));
     return (username == 'admin' && password == '1')
@@ -19,10 +19,10 @@ class LoginPage extends StatelessWidget {
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-    final LeagueService leagueService = LeagueService();
+    final LoginService loginService = LoginService();
 
     Future<void> handleLogin() async {
-      final token = await leagueService.login(
+      final token = await loginService.login(
         usernameController.text,
         passwordController.text,
       );

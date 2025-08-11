@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
+import 'package:my_league_flutter/model/round_dto.dart';
 
 class LeagueService {
   final Dio _dio;
@@ -74,6 +75,16 @@ class LeagueService {
       return PhaseDto.fromJsonList(response.data);
     } catch (e) {
       print("Error in GET league phases: $e");
+      return [];
+    }
+  }
+
+  Future<List<RoundDto>> getMainPage() async {
+    try {
+      final response = await _dio.get("/main");
+      return RoundDto.fromJsonList(response.data);
+    } catch (e) {
+      print("Error in GET main page: $e");
       return [];
     }
   }
