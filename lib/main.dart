@@ -28,8 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   bool _isSearching = false;
-  final FocusNode _searchFocusNode =
-      FocusNode(); // Para detectar el cierre del teclado.
+  final FocusNode _searchFocusNode = FocusNode();
 
   final List<Widget> _pages = [
     const MainScreen(),
@@ -61,6 +60,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
         leading:
             _isSearching
                 ? IconButton(
@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
               : _selectedIndex == 1
               ? 'Mi cancha'
               : 'Notificaciones',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         elevation: 3,
         centerTitle: true,
@@ -91,10 +92,7 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(FontAwesomeIcons.futbol),
             label: 'Partidos',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_soccer),
-            label: 'Mi cancha',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi cancha'),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             label: 'Notificaciones',
@@ -102,6 +100,10 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey[600],
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
