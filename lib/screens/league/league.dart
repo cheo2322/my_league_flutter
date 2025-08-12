@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_league_flutter/model/default_dto.dart';
+import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
@@ -9,7 +9,7 @@ import 'package:my_league_flutter/screens/positions/positions_table.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
-  final DefaultDto leagueDto;
+  final LeagueDto leagueDto;
 
   const League({super.key, required this.leagueDto});
 
@@ -81,8 +81,8 @@ class _LeagueState extends State<League> {
 
     _fetchPositions(
       widget.leagueDto.id,
-      '689688eaf0b926dd79c75b57',
-      '6896c15aa9d562936006edd0',
+      widget.leagueDto.currentPhaseId,
+      widget.leagueDto.currentRoundId,
     ).then((response) {
       setState(() {
         _positionsTable = response;

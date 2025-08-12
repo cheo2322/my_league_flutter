@@ -269,9 +269,11 @@ class _NewLeagueState extends State<NewLeague> {
                             String? leagueId;
                             _createLeague(
                                   LeagueDto(
-                                    id: null,
+                                    id: "",
                                     name: nameController.text,
                                     major: majorController.text,
+                                    currentPhaseId: "",
+                                    currentRoundId: "",
                                   ),
                                 )
                                 .then((response) {

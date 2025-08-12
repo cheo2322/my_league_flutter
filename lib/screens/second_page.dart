@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
+import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/web/league_service.dart';
@@ -13,7 +14,7 @@ class MyField extends StatefulWidget {
 
 class _MyFieldState extends State<MyField> {
   LeagueService leagueService = LeagueService();
-  List<DefaultDto> leagues = [];
+  List<LeagueDto> leagues = [];
   List<DefaultDto> teams = [];
   bool isLoadingLeagues = true;
   bool isLoadingTeams = true;
@@ -97,9 +98,13 @@ class _MyFieldState extends State<MyField> {
                           MaterialPageRoute(
                             builder:
                                 (context) => League(
-                                  leagueDto: DefaultDto(
+                                  leagueDto: LeagueDto(
                                     id: leagues[index].id,
                                     name: leagues[index].name,
+                                    currentPhaseId:
+                                        leagues[index].currentPhaseId,
+                                    currentRoundId:
+                                        leagues[index].currentRoundId,
                                   ),
                                 ),
                           ),
