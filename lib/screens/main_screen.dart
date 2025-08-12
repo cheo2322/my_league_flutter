@@ -51,7 +51,11 @@ class _MainScreenState extends State<MainScreen> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: RoundCard(round: _rounds[index]),
+                    child: RoundCard(
+                      round: _rounds[index],
+                      title:
+                          '${_rounds[index].leagueName} - ${_rounds[index].phase} (Fecha ${_rounds[index].order})',
+                    ),
                   );
                 },
               ),
@@ -62,8 +66,10 @@ class _MainScreenState extends State<MainScreen> {
             MaterialPageRoute(builder: (context) => NewLeague()),
           );
         },
-        tooltip: 'Agregar opciones',
-        child: const Icon(Icons.add),
+        tooltip: 'Agregar',
+        backgroundColor: Colors.teal,
+        splashColor: Colors.white,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

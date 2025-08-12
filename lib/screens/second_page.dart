@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
-import 'package:my_league_flutter/screens/league/league_edit.dart';
+import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 

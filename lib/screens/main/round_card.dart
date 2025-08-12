@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
-import 'package:my_league_flutter/screens/league/league_edit.dart';
+import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/match/match_card.dart';
 
 class RoundCard extends StatelessWidget {
   final RoundDto round;
+  final String title;
 
-  const RoundCard({super.key, required this.round});
+  const RoundCard({super.key, required this.round, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class RoundCard extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  round.title,
+                  title,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
