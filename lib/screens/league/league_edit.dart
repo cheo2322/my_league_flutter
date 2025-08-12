@@ -102,7 +102,7 @@ class _LeagueState extends State<League> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.leagueDto.name),
+          title: Text(widget.leagueDto.name, style: TextStyle(fontSize: 18)),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
