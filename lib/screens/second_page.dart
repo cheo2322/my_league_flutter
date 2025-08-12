@@ -96,8 +96,12 @@ class _MyFieldState extends State<MyField> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (context) =>
-                                    League(leagueId: leagues[index].id!),
+                                (context) => League(
+                                  leagueDto: DefaultDto(
+                                    id: leagues[index].id,
+                                    name: leagues[index].name,
+                                  ),
+                                ),
                           ),
                         );
                       },

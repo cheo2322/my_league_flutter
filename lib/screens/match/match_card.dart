@@ -73,7 +73,7 @@ class MatchCard extends StatelessWidget {
                   ),
                   if (match.status != "SCHEDULED")
                     Text(
-                      match.status,
+                      match.status == "FINISHED" ? 'FINALIZADO' : 'EN JUEGO',
                       style: const TextStyle(
                         fontSize: 9,
                         color: Colors.red,

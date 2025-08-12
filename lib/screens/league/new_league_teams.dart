@@ -185,7 +185,7 @@ class _NewLeagueTeamsState extends State<NewLeagueTeams> {
                           ? () async {
                             await _addTeamToLeague(
                               DefaultDto(
-                                id: null,
+                                id: "null",
                                 name: _teamNameController.text,
                               ),
                               widget.leagueId,

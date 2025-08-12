@@ -99,7 +99,10 @@ class _NewTeam extends State<NewTeam> {
                   isButtonEnabled
                       ? () async {
                         await _addTeamToLeague(
-                          DefaultDto(id: null, name: _teamNameController.text),
+                          DefaultDto(
+                            id: "null",
+                            name: _teamNameController.text,
+                          ),
                           widget.leagueDto.id!,
                         );
 

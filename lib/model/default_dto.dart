@@ -1,5 +1,5 @@
 class DefaultDto {
-  final String? id;
+  final String id;
   final String name;
 
   DefaultDto({required this.id, required this.name});

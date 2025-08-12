@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
-import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/screens/phase/phase.dart';
 import 'package:my_league_flutter/screens/teams/team.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
-// TODO: Retrieve DefaultDto for League
 class League extends StatefulWidget {
-  final String leagueId;
+  final DefaultDto leagueDto;
 
-  const League({super.key, required this.leagueId});
+  const League({super.key, required this.leagueDto});
 
   @override
   State<League> createState() => _LeagueState();
@@ -18,8 +16,12 @@ class League extends StatefulWidget {
 
 class _LeagueState extends State<League> {
   LeagueService leagueService = LeagueService();
+  List<Tab> tabs = [
+    Tab(text: 'Fases'),
+    Tab(text: 'Equipos'),
+    Tab(text: 'Configuraciones'),
+  ];
 
-  LeagueDto? league;
   bool isLoading = true;
   bool isLoadingTeams = true;
   bool isLoadingPhases = true;
@@ -29,22 +31,6 @@ class _LeagueState extends State<League> {
   List<PhaseDto> phases = [];
   List<DefaultDto> teams = [];
   String selectedValue = 'Opción 1';
-
-  Future<LeagueDto?> _getLeague(String leagueId) async {
-    try {
-      final response = await leagueService.getLeague(leagueId);
-      if (response != null) {
-        print("League retrieved");
-        return response;
-      } else {
-        print("Error retrieving league");
-        return null;
-      }
-    } catch (e) {
-      print("Error in _getLeague: $e");
-      return null;
-    }
-  }
 
   Future<List<DefaultDto>?> _getTeamsFromLeague(String leagueId) async {
     try {
@@ -100,16 +86,7 @@ class _LeagueState extends State<League> {
   void initState() {
     super.initState();
 
-    _getLeague(widget.leagueId).then((response) {
-      if (mounted) {
-        setState(() {
-          league = response;
-          isLoading = false;
-        });
-      }
-    });
-
-    _getLeaguePhases(widget.leagueId).then((response) {
+    _getLeaguePhases(widget.leagueDto.id).then((response) {
       if (mounted) {
         setState(() {
           phases = response ?? [];
@@ -124,182 +101,156 @@ class _LeagueState extends State<League> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: Stack(
+        appBar: AppBar(
+          title: Text(widget.leagueDto.name),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+          bottom: TabBar(tabs: tabs),
+        ),
+        body: TabBarView(
           children: [
-            Scaffold(
-              appBar: AppBar(
-                title: Text(league != null ? league!.name : 'Cargando...'),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                bottom: const TabBar(
-                  tabs: [
-                    Tab(text: 'Fases'),
-                    Tab(text: 'Equipos'),
-                    Tab(text: 'Configuraciones'),
-                  ],
-                ),
-              ),
-              body: TabBarView(
-                children: [
-                  // Phases tab
-                  Stack(
+            // Phases tab
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: phases.length,
-                                itemBuilder: (context, index) {
-                                  return Card(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    elevation: 3,
-                                    child: ListTile(
-                                      leading: const Icon(Icons.calendar_month),
-                                      title: Text(
-                                        phases[index].name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      subtitle: Text(phases[index].status),
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => Phase(
-                                                  phaseDto: phases[index],
-                                                ),
-                                          ),
-                                        );
-                                      },
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: phases.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              elevation: 3,
+                              child: ListTile(
+                                leading: const Icon(Icons.calendar_month),
+                                title: Text(
+                                  phases[index].name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(phases[index].status),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              Phase(phaseDto: phases[index]),
                                     ),
                                   );
                                 },
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final result = await _showDialogNewTeam(
-                                  context,
-                                );
-                                if (result == true) {
-                                  _getTeamsFromLeague(widget.leagueId).then((
-                                    response,
-                                  ) {
-                                    setState(() {
-                                      teams = response ?? [];
-                                    });
-                                  });
-                                }
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.add),
-                                  const SizedBox(width: 8),
-                                  const Text("Agregar fase"),
-                                ],
-                              ),
-                            ),
+                            );
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final result = await _showDialogNewTeam(context);
+                          if (result == true) {
+                            _getTeamsFromLeague(widget.leagueDto.id).then((
+                              response,
+                            ) {
+                              setState(() {
+                                teams = response ?? [];
+                              });
+                            });
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.add),
+                            const SizedBox(width: 8),
+                            const Text("Agregar fase"),
                           ],
                         ),
                       ),
-
-                      if (isLoadingPhases)
-                        Container(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
                     ],
                   ),
+                ),
 
-                  // Teams tab
-                  Stack(
-                    children: [
-                      Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: teams.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  elevation: 3,
-                                  child: ListTile(
-                                    leading: const Icon(Icons.sports_soccer),
-                                    title: Text(
-                                      teams[index].name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Text('ID: ${teams[index].id!}'),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  Team(teamDto: teams[index]),
-                                        ),
-                                      );
-                                    },
+                if (isLoadingPhases)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
+
+            // Teams tab
+            Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: teams.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            elevation: 3,
+                            child: ListTile(
+                              leading: const Icon(Icons.sports_soccer),
+                              title: Text(
+                                teams[index].name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text('ID: ${teams[index].id}'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            Team(teamDto: teams[index]),
                                   ),
                                 );
                               },
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
-                              onPressed: () async {},
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.add),
-                                  const SizedBox(width: 8),
-                                  const Text("Agregar un equipo"),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                      if (isLoadingTeams)
-                        Container(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () async {},
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.add),
+                            const SizedBox(width: 8),
+                            const Text("Agregar un equipo"),
+                          ],
                         ),
-                    ],
-                  ),
-
-                  // Página de Configuraciones con contenido ficticio
-                  Center(child: Text('Opciones y ajustes aquí')),
-                ],
-              ),
-            ),
-            if (isLoading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  child: const Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+                if (isLoadingTeams)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
+
+            // Settings tab
+            Center(child: Text('Opciones y ajustes aquí')),
           ],
         ),
       ),
@@ -339,16 +290,16 @@ class _LeagueState extends State<League> {
                           ? () async {
                             await _addTeamToLeague(
                               DefaultDto(
-                                id: null,
+                                id: "null",
                                 name: teamNameController.text,
                               ),
-                              widget.leagueId,
+                              widget.leagueDto.id,
                             );
 
                             Navigator.pop(context, true);
                           }
                           : null,
-                  child: const Text('Crear'), // Missing loader
+                  child: const Text('Crear'), // TODO: Missing loader
                 ),
                 ElevatedButton(
                   onPressed: () {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
+import 'package:my_league_flutter/screens/league/league_edit.dart';
 import 'package:my_league_flutter/screens/match/match_card.dart';
 
 class RoundCard extends StatelessWidget {
@@ -15,24 +17,40 @@ class RoundCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.teal,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(4),
-              ),
-            ),
-            child: Center(
-              child: Text(
-                round.title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => League(
+                        leagueDto: DefaultDto(
+                          id: round.leagueId,
+                          name: round.leagueName,
+                        ),
+                      ),
                 ),
-                textAlign: TextAlign.center,
+              );
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.teal,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(4),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  round.title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),
