@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
+import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 
 class LeagueService {
@@ -86,6 +87,25 @@ class LeagueService {
     } catch (e) {
       print("Error in GET main page: $e");
       return [];
+    }
+  }
+
+  Future<PositionsTableDto?> getLeaguePositions(
+    String leagueId,
+    String phaseId,
+    String roundId,
+  ) async {
+    try {
+      final response = await _dio.get(
+        "/leagues/$leagueId/positions/$phaseId/$roundId",
+      );
+
+      print("League positions retrieved: ${response.data}");
+
+      return PositionsTableDto.fromJson(response.data);
+    } catch (e) {
+      print("Error in GET league positions: $e");
+      return null;
     }
   }
 }

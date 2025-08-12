@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
+import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
 import 'package:my_league_flutter/screens/phase/phase.dart';
+import 'package:my_league_flutter/screens/positions/positions_table.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
@@ -26,14 +28,12 @@ class _LeagueState extends State<League> {
   ];
 
   bool isLoadingMatches = true;
+  bool isLoadingPositions = true;
   bool isLoadingPhases = true;
-  TextEditingController teamNameController = TextEditingController();
-  bool isButtonEnabled = false;
 
-  List<PhaseDto> phases = [];
   List<RoundDto> _rounds = [];
-
-  String selectedValue = 'Opción 1';
+  PositionsTableDto? _positionsTable;
+  List<PhaseDto> phases = [];
 
   Future<void> _fetchRounds() async {
     final service = LeagueService();
@@ -45,7 +45,7 @@ class _LeagueState extends State<League> {
     });
   }
 
-  Future<List<PhaseDto>?> _getLeaguePhases(String leagueId) async {
+  Future<List<PhaseDto>?> _fetchLeaguePhases(String leagueId) async {
     try {
       final response = await leagueService.getLeaguePhases(leagueId);
       print("League phases retrieved");
@@ -56,20 +56,37 @@ class _LeagueState extends State<League> {
     }
   }
 
+  Future<PositionsTableDto?> _fetchPositions(
+    String leagueId,
+    String phaseId,
+    String roundId,
+  ) async {
+    try {
+      return await leagueService.getLeaguePositions(leagueId, phaseId, roundId);
+    } catch (e) {
+      print("Error in _fetchPositions: $e");
+      return null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _getLeaguePhases(widget.leagueDto.id).then((response) {
-      setState(() {
-        phases = response ?? [];
-        isLoadingPhases = false;
-      });
-    });
-
     _fetchRounds().then((response) {
       setState(() {
         isLoadingMatches = false;
+      });
+    });
+
+    _fetchPositions(
+      widget.leagueDto.id,
+      '689688eaf0b926dd79c75b57',
+      '6896c15aa9d562936006edd0',
+    ).then((response) {
+      setState(() {
+        _positionsTable = response;
+        isLoadingPositions = false;
       });
     });
   }
@@ -128,7 +145,32 @@ class _LeagueState extends State<League> {
             ),
 
             // Positions tab
-            Center(child: Text('Posiciones aquí')),
+            Stack(
+              children: [
+                if (_positionsTable != null)
+                  ListView.builder(
+                    itemCount: 1,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 2,
+                      vertical: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: PositionsTable(
+                          positions: _positionsTable!.positions,
+                        ),
+                      );
+                    },
+                  ),
+
+                if (isLoadingPositions)
+                  Container(
+                    color: Colors.black.withAlpha(50),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
 
             // Phases tab
             Stack(
