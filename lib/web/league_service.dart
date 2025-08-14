@@ -70,16 +70,6 @@ class LeagueService {
     }
   }
 
-  Future<List<PhaseDto>> getLeaguePhases(String leagueId) async {
-    try {
-      final response = await _dio.get("/leagues/$leagueId/phases");
-      return PhaseDto.fromJsonList(response.data);
-    } catch (e) {
-      print("Error in GET league phases: $e");
-      return [];
-    }
-  }
-
   Future<List<RoundDto>> getMainPage() async {
     try {
       final response = await _dio.get("/main");
@@ -106,6 +96,20 @@ class LeagueService {
     } catch (e) {
       print("Error in GET league positions: $e");
       return null;
+    }
+  }
+
+  Future<List<RoundDto>> getRoundsFromActivePhaseByLeagueId(
+    String leagueId,
+  ) async {
+    try {
+      final response = await _dio.get(
+        "/leagues/$leagueId/phases/active/rounds",
+      );
+      return RoundDto.fromJsonList(response.data);
+    } catch (e) {
+      print("Error in GET rounds from active phase: $e");
+      return [];
     }
   }
 }

@@ -34,25 +34,10 @@ class _LeagueState extends State<League> {
   PositionsTableDto? _positionsTable;
   List<PhaseDto> phases = [];
 
-  Future<void> _fetchRounds() async {
-    final service = LeagueService();
-    final rounds = await service.getMainPage();
-
-    setState(() {
-      _rounds = rounds;
-      isLoadingMatches = false;
-    });
-  }
-
-  Future<List<PhaseDto>?> _fetchLeaguePhases(String leagueId) async {
-    try {
-      final response = await leagueService.getLeaguePhases(leagueId);
-      print("League phases retrieved");
-      return response;
-    } catch (e) {
-      print("Error in _getLeaguePhases: $e");
-      return [];
-    }
+  Future<List<RoundDto>> _fetchRounds() async {
+    return await leagueService.getRoundsFromActivePhaseByLeagueId(
+      widget.leagueDto.id,
+    );
   }
 
   Future<PositionsTableDto?> _fetchPositions(
@@ -74,6 +59,7 @@ class _LeagueState extends State<League> {
 
     _fetchRounds().then((response) {
       setState(() {
+        _rounds = response;
         isLoadingMatches = false;
       });
     });
