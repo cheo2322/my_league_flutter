@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
-import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
@@ -55,22 +54,24 @@ class _MainScreenState extends State<MainScreen> {
                       round: _rounds[index],
                       title:
                           '${_rounds[index].leagueName} - ${_rounds[index].phase} (Fecha ${_rounds[index].order})',
+                      isRoundSelectable: true,
                     ),
                   );
                 },
               ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewLeague()),
-          );
-        },
-        tooltip: 'Agregar',
-        backgroundColor: Colors.teal,
-        splashColor: Colors.white,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // TODO: Activate when user is authenticated
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => NewLeague()),
+      //     );
+      //   },
+      //   tooltip: 'Agregar',
+      //   backgroundColor: Colors.teal,
+      //   splashColor: Colors.white,
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
     );
   }
 }

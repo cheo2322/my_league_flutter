@@ -7,8 +7,14 @@ import 'package:my_league_flutter/screens/match/match_card.dart';
 class RoundCard extends StatelessWidget {
   final RoundDto round;
   final String title;
+  final bool isRoundSelectable;
 
-  const RoundCard({super.key, required this.round, required this.title});
+  const RoundCard({
+    super.key,
+    required this.round,
+    required this.title,
+    this.isRoundSelectable = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +26,22 @@ class RoundCard extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => League(
-                        leagueDto: LeagueDto(
-                          id: round.leagueId,
-                          name: round.leagueName,
-                          activePhaseId: round.phaseId,
-                          activeRoundId: round.roundId,
+              if (isRoundSelectable) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => League(
+                          leagueDto: LeagueDto(
+                            id: round.leagueId,
+                            name: round.leagueName,
+                            activePhaseId: round.phaseId,
+                            activeRoundId: round.roundId,
+                          ),
                         ),
-                      ),
-                ),
-              );
+                  ),
+                );
+              }
             },
             child: Container(
               width: double.infinity,
