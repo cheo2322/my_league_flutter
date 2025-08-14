@@ -9,55 +9,55 @@ class PositionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Text(
-              '$order°',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13),
-            ),
-          ),
-          Expanded(flex: 3, child: Text(position.team, style: _bold)),
-          Expanded(
-            flex: 1,
-            child: Text(
-              '${position.points}',
-              textAlign: TextAlign.center,
-              style: _bold,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              '${position.goals}',
-              textAlign: TextAlign.center,
-              style: _bold,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text('${position.favorGoals}', textAlign: TextAlign.center),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              '${position.againstGoals}',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text('${position.playedGames}', textAlign: TextAlign.center),
-          ),
-        ],
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 36),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1),
+        child: Row(
+          children: [
+            _buildOrderCell(order),
+            _buildTeamCell(position.team),
+            ..._buildStatsCells([
+              {'value': position.points, 'bold': true},
+              {'value': position.goals, 'bold': true},
+              {'value': position.favorGoals, 'bold': false},
+              {'value': position.againstGoals, 'bold': false},
+              {'value': position.playedGames, 'bold': false},
+            ]),
+          ],
+        ),
       ),
     );
   }
 
-  TextStyle get _bold =>
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
+  TextStyle _style(bool bold) => TextStyle(
+    fontSize: 13,
+    fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+  );
+
+  Widget _buildOrderCell(int order) => Expanded(
+    flex: 1,
+    child: Text('$order°', textAlign: TextAlign.center, style: _style(false)),
+  );
+
+  Widget _buildTeamCell(String team) => Expanded(
+    flex: 3,
+    child: Text(
+      team,
+      style: _style(true),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    ),
+  );
+
+  List<Widget> _buildStatsCells(List<Map<String, dynamic>> stats) {
+    return stats.map((stat) {
+      final value = '${stat['value']}';
+      final isBold = stat['bold'] as bool;
+      return Expanded(
+        flex: 1,
+        child: Text(value, textAlign: TextAlign.center, style: _style(isBold)),
+      );
+    }).toList();
+  }
 }
