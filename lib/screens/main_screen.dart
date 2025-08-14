@@ -43,10 +43,7 @@ class _MainScreenState extends State<MainScreen> {
               ? const Center(child: Text("No hay partidos disponibles"))
               : ListView.builder(
                 itemCount: _rounds.length,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),

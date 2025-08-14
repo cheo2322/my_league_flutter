@@ -23,7 +23,7 @@ class _LeagueState extends State<League> {
   List<Tab> tabs = [
     Tab(text: 'Partidos'),
     Tab(text: 'Posiciones'),
-    Tab(text: 'Fases'),
+    // Tab(text: 'Fases'), // TODO: Add phases later if needed
     Tab(text: 'Estadísticas'),
   ];
 
@@ -121,7 +121,7 @@ class _LeagueState extends State<League> {
                 ListView.builder(
                   itemCount: _rounds.length,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
+                    horizontal: 8,
                     vertical: 8,
                   ),
                   itemBuilder: (context, index) {
@@ -173,57 +173,7 @@ class _LeagueState extends State<League> {
             ),
 
             // Phases tab
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: phases.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              elevation: 3,
-                              child: ListTile(
-                                leading: const Icon(Icons.calendar_month),
-                                title: Text(
-                                  phases[index].name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(phases[index].status),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              Phase(phaseDto: phases[index]),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                if (isLoadingPhases)
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-              ],
-            ),
+            // TODO: Add phases later if needed
 
             // Statistics tab
             Center(child: Text('Estadísticas aquí')),
