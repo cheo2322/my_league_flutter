@@ -272,8 +272,8 @@ class _NewLeagueState extends State<NewLeague> {
                                     id: "",
                                     name: nameController.text,
                                     major: majorController.text,
-                                    currentPhaseId: "",
-                                    currentRoundId: "",
+                                    activePhaseId: "",
+                                    activeRoundId: "",
                                   ),
                                 )
                                 .then((response) {

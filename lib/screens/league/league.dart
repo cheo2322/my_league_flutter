@@ -65,7 +65,7 @@ class _LeagueState extends State<League> {
       return await leagueService.getLeaguePositions(leagueId, phaseId, roundId);
     } catch (e) {
       print("Error in _fetchPositions: $e");
-      return null;
+      return null; //TODO: Handle error
     }
   }
 
@@ -81,8 +81,8 @@ class _LeagueState extends State<League> {
 
     _fetchPositions(
       widget.leagueDto.id,
-      widget.leagueDto.currentPhaseId,
-      widget.leagueDto.currentRoundId,
+      widget.leagueDto.activePhaseId,
+      widget.leagueDto.activeRoundId,
     ).then((response) {
       setState(() {
         _positionsTable = response;

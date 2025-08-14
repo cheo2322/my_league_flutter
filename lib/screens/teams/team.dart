@@ -33,7 +33,7 @@ class _Team extends State<Team> {
 
   @override
   void initState() {
-    _getTeamInfo(widget.teamDto.id!).then((response) {
+    _getTeamInfo(widget.teamDto.id).then((response) {
       setState(() {
         teamInfo = response;
         isLoadingInfo = false;

@@ -103,7 +103,7 @@ class _NewTeam extends State<NewTeam> {
                             id: "null",
                             name: _teamNameController.text,
                           ),
-                          widget.leagueDto.id!,
+                          widget.leagueDto.id,
                         );
 
                         Navigator.pop(context, true);

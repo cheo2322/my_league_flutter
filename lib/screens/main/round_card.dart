@@ -28,8 +28,8 @@ class RoundCard extends StatelessWidget {
                         leagueDto: LeagueDto(
                           id: round.leagueId,
                           name: round.leagueName,
-                          currentPhaseId: round.phaseId,
-                          currentRoundId: round.roundId,
+                          activePhaseId: round.phaseId,
+                          activeRoundId: round.roundId,
                         ),
                       ),
                 ),

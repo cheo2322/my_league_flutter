@@ -101,10 +101,8 @@ class _MyFieldState extends State<MyField> {
                                   leagueDto: LeagueDto(
                                     id: leagues[index].id,
                                     name: leagues[index].name,
-                                    currentPhaseId:
-                                        leagues[index].currentPhaseId,
-                                    currentRoundId:
-                                        leagues[index].currentRoundId,
+                                    activePhaseId: leagues[index].activePhaseId,
+                                    activeRoundId: leagues[index].activeRoundId,
                                   ),
                                 ),
                           ),

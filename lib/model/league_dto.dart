@@ -2,15 +2,15 @@ class LeagueDto {
   final String id;
   final String name;
   final String? major;
-  final String currentPhaseId;
-  final String currentRoundId;
+  final String activePhaseId;
+  final String activeRoundId;
 
   LeagueDto({
     required this.id,
     required this.name,
     this.major,
-    required this.currentPhaseId,
-    required this.currentRoundId,
+    required this.activePhaseId,
+    required this.activeRoundId,
   });
 
   factory LeagueDto.fromJson(Map<String, dynamic> json) {
@@ -18,8 +18,8 @@ class LeagueDto {
       id: json['id'],
       name: json['name'],
       major: json['major'] ?? '',
-      currentPhaseId: json['currentPhaseId'] ?? '',
-      currentRoundId: json['currentRoundId'] ?? '',
+      activePhaseId: json['activePhaseId'] ?? '',
+      activeRoundId: json['activeRoundId'] ?? '',
     );
   }
 
@@ -32,8 +32,8 @@ class LeagueDto {
       'id': id,
       'name': name,
       'major': major ?? '',
-      'currentPhaseId': currentPhaseId,
-      'currentRoundId': currentRoundId,
+      'activePhaseId': activePhaseId,
+      'activeRoundId': activeRoundId,
     };
   }
 }
