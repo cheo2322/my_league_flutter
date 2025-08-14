@@ -4,7 +4,7 @@ class PositionDto {
   final int points;
   final int favorGoals;
   final int againstGoals;
-  final int goals;
+  final String goals;
 
   const PositionDto({
     required this.team,
@@ -22,7 +22,7 @@ class PositionDto {
       points: json['points'] as int,
       favorGoals: json['favorGoals'] as int,
       againstGoals: json['againstGoals'] as int,
-      goals: json['goals'] as int,
+      goals: json['goals'] as String,
     );
   }
 

@@ -4,7 +4,6 @@ import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
-import 'package:my_league_flutter/screens/phase/phase.dart';
 import 'package:my_league_flutter/screens/positions/positions_table.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
@@ -24,7 +23,7 @@ class _LeagueState extends State<League> {
     Tab(text: 'Partidos'),
     Tab(text: 'Posiciones'),
     // Tab(text: 'Fases'), // TODO: Add phases later if needed
-    Tab(text: 'Estadísticas'),
+    // Tab(text: 'Estadísticas'), // TODO: Add Statistics later if needed
   ];
 
   bool isLoadingMatches = true;
@@ -176,7 +175,7 @@ class _LeagueState extends State<League> {
             // TODO: Add phases later if needed
 
             // Statistics tab
-            Center(child: Text('Estadísticas aquí')),
+            // TODO: Add Statistics later if needed
           ],
         ),
       ),
