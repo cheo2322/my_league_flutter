@@ -34,6 +34,9 @@ class _LeagueState extends State<League> {
   PositionsTableDto? _positionsTable;
   List<PhaseDto> phases = [];
 
+  List<String> _roundOptions = [];
+  String? _selectedRound;
+
   Future<List<RoundDto>> _fetchRounds() async {
     return await leagueService.getRoundsFromActivePhaseByLeagueId(
       widget.leagueDto.id,
@@ -57,23 +60,38 @@ class _LeagueState extends State<League> {
   void initState() {
     super.initState();
 
-    _fetchRounds().then((response) {
-      setState(() {
-        _rounds = response;
-        isLoadingMatches = false;
-      });
-    });
+    _fetchRounds()
+        .then((response) {
+          setState(() {
+            _rounds = response;
+            isLoadingMatches = false;
 
-    _fetchPositions(
-      widget.leagueDto.id,
-      widget.leagueDto.activePhaseId,
-      widget.leagueDto.activeRoundId,
-    ).then((response) {
-      setState(() {
-        _positionsTable = response;
-        isLoadingPositions = false;
-      });
-    });
+            _roundOptions =
+                _rounds.map((round) => 'Fecha ${round.order}').toList();
+
+            int selectedRoundInt =
+                _rounds
+                    .firstWhere(
+                      (round) =>
+                          round.roundId == widget.leagueDto.activeRoundId,
+                    )
+                    .order;
+
+            _selectedRound = 'Fecha $selectedRoundInt';
+          });
+
+          return _fetchPositions(
+            widget.leagueDto.id,
+            widget.leagueDto.activePhaseId,
+            widget.leagueDto.activeRoundId,
+          );
+        })
+        .then((positionsResponse) {
+          setState(() {
+            _positionsTable = positionsResponse;
+            isLoadingPositions = false;
+          });
+        });
   }
 
   @override
@@ -132,22 +150,56 @@ class _LeagueState extends State<League> {
             // Positions tab
             Stack(
               children: [
-                if (_positionsTable != null)
-                  ListView.builder(
-                    itemCount: 1,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                      vertical: 8,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: PositionsTable(
-                          positions: _positionsTable!.positions,
+                Column(
+                  children: [
+                    // if (_positionsTable != null && _selectedRound != null)
+                    //   Padding(
+                    //     padding: const EdgeInsets.symmetric(
+                    //       horizontal: 5,
+                    //       vertical: 8,
+                    //     ),
+                    //     child: DropdownButton<String>(
+                    //       value: _selectedRound,
+                    //       hint: Text('Selecciona una opción'),
+                    //       items:
+                    //           _roundOptions.map((String valor) {
+                    //             return DropdownMenuItem<String>(
+                    //               value: valor,
+                    //               child: Text(
+                    //                 valor,
+                    //                 textAlign: TextAlign.center,
+                    //                 style: TextStyle(fontSize: 13),
+                    //               ),
+                    //             );
+                    //           }).toList(),
+                    //       onChanged: (String? nuevoValor) {
+                    //         setState(() {
+                    //           _selectedRound = nuevoValor;
+                    //           // Aquí puedes disparar lógica para cargar posiciones
+                    //         });
+                    //       },
+                    //     ),
+                    //   ),
+                    if (_positionsTable != null)
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: 1,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 8,
+                          ),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: PositionsTable(
+                                positions: _positionsTable!.positions,
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                  ],
+                ),
 
                 if (isLoadingPositions)
                   Container(
