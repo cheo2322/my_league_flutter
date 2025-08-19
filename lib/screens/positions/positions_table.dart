@@ -9,6 +9,8 @@ class PositionsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Card(
       elevation: 4,
       child: Column(
@@ -18,7 +20,7 @@ class PositionsTable extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.teal,
+              color: primaryColor,
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(4),
               ),
@@ -34,11 +36,7 @@ class PositionsTable extends StatelessWidget {
                   children: [
                     PositionCard(order: i + 1, position: positions[i]),
                     if (i < positions.length - 1)
-                      const Divider(
-                        height: 8,
-                        thickness: 1,
-                        color: Colors.teal,
-                      ),
+                      Divider(height: 8, thickness: 1, color: primaryColor),
                   ],
                 );
               }),

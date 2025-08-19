@@ -18,6 +18,8 @@ class RoundCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -47,7 +49,7 @@ class RoundCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.teal,
+                color: primaryColor,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(4),
                 ),

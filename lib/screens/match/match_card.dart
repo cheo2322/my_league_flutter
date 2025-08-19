@@ -6,12 +6,6 @@ class MatchCard extends StatelessWidget {
 
   const MatchCard({super.key, required this.match});
 
-  final TextStyle winnerStyle = const TextStyle(
-    fontSize: 11,
-    fontWeight: FontWeight.bold,
-    color: Colors.green,
-  );
-
   final TextStyle normalStyle = const TextStyle(fontSize: 11);
 
   bool isHomeWinner(MatchDto match) =>
@@ -24,6 +18,12 @@ class MatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle winnerStyle = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.bold,
+      color: Theme.of(context).primaryColor,
+    );
+
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 56),
       child: Padding(

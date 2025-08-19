@@ -21,6 +21,8 @@ class LoginPage extends StatelessWidget {
     final FlutterSecureStorage secureStorage = FlutterSecureStorage();
     final LoginService loginService = LoginService();
 
+    final primaryColor = Theme.of(context).primaryColor;
+
     Future<void> handleLogin() async {
       final token = await loginService.login(
         usernameController.text,
@@ -37,7 +39,7 @@ class LoginPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Login exitoso'),
-            backgroundColor: Colors.green,
+            backgroundColor: primaryColor,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -58,23 +60,29 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login'), backgroundColor: Colors.blue),
+      appBar: AppBar(
+        title: const Text(
+          'Iniciar sesión',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Iniciar sesión',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
             TextField(
               controller: usernameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Usuario',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+                floatingLabelStyle: TextStyle(color: primaryColor),
               ),
+              cursorColor: primaryColor,
             ),
             const SizedBox(height: 20),
             TextField(
@@ -90,13 +98,16 @@ class LoginPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: handleLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: primaryColor,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 50,
                     vertical: 15,
                   ),
                 ),
-                child: const Text('Entrar'),
+                child: const Text(
+                  'Entrar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],

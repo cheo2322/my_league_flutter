@@ -21,14 +21,16 @@ class _MyFieldState extends State<MyField> {
 
   @override
   void initState() {
+    super.initState();
+
     _fetchLeagues();
     _loadTeams();
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       body: ListView(
         children: [
@@ -42,7 +44,7 @@ class _MyFieldState extends State<MyField> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add, color: Colors.indigo),
+                  icon: Icon(Icons.add),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -55,7 +57,7 @@ class _MyFieldState extends State<MyField> {
           ),
 
           isLoadingLeagues
-              ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              ? Center(child: CircularProgressIndicator())
               : leagues.isEmpty
               ? Column(
                 children: [
@@ -71,7 +73,7 @@ class _MyFieldState extends State<MyField> {
                     icon: Icon(Icons.add),
                     label: Text('Crear un torneo'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -113,7 +115,7 @@ class _MyFieldState extends State<MyField> {
                 },
               ),
 
-          Divider(thickness: 2, color: Colors.grey[300]),
+          Divider(thickness: 2),
 
           Padding(
             padding: EdgeInsets.all(10),
@@ -125,12 +127,12 @@ class _MyFieldState extends State<MyField> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add, color: Colors.indigo),
+                  icon: Icon(Icons.add),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Agregar nuevo equipo'),
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: primaryColor,
                       ),
                     );
                   },
@@ -140,7 +142,7 @@ class _MyFieldState extends State<MyField> {
           ),
 
           isLoadingTeams
-              ? Center(child: CircularProgressIndicator(color: Colors.indigo))
+              ? Center(child: CircularProgressIndicator())
               : teams.isEmpty
               ? Column(
                 children: [
@@ -151,14 +153,14 @@ class _MyFieldState extends State<MyField> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Crear un nuevo equipo'),
-                          backgroundColor: Colors.indigo,
+                          backgroundColor: primaryColor,
                         ),
                       );
                     },
                     icon: Icon(Icons.add),
                     label: Text('Crear un equipo'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
                     ),
                   ),

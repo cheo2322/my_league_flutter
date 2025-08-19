@@ -33,12 +33,12 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       body:
           isLoading
-              ? const Center(
-                child: CircularProgressIndicator(color: Colors.indigo),
-              )
+              ? const Center(child: CircularProgressIndicator())
               : _rounds.isEmpty
               ? const Center(child: Text("No hay partidos disponibles"))
               : ListView.builder(
@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
       //     );
       //   },
       //   tooltip: 'Agregar',
-      //   backgroundColor: Colors.teal,
+      //   backgroundColor: primaryColor,
       //   splashColor: Colors.white,
       //   child: const Icon(Icons.add, color: Colors.white),
       // ),

@@ -78,11 +78,13 @@ class _LeagueState extends State<League> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: primaryColor,
           title: Text(
             widget.leagueDto.name,
             style: TextStyle(fontSize: 18, color: Colors.white),
@@ -96,6 +98,9 @@ class _LeagueState extends State<League> {
             indicatorColor: Colors.white,
             labelColor: Colors.white,
             labelPadding: EdgeInsets.symmetric(horizontal: 5),
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+            unselectedLabelColor: Colors.white,
           ),
         ),
         body: TabBarView(

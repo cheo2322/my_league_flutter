@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
-import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 
