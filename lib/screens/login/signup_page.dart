@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_league_flutter/web/auth_service.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -8,8 +9,11 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  AuthService authService = AuthService();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
@@ -54,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Crear Cuenta')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +71,11 @@ class _SignupPageState extends State<SignupPage> {
               errorText: emailErrorText,
             ),
             const SizedBox(height: 16.0),
-            _buildCustomTextField('Usuario*', TextInputType.text, null),
+            _buildCustomTextField(
+              'Usuario*',
+              TextInputType.text,
+              usernameController,
+            ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
               'Contraseña*',
@@ -91,52 +99,8 @@ class _SignupPageState extends State<SignupPage> {
                       ? const Icon(Icons.check, color: Colors.green)
                       : const Icon(Icons.close, color: Colors.red),
             ),
-
             const SizedBox(height: 16.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Requisitos de la contraseña:',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      hasMinLength ? Icons.check : Icons.close,
-                      color: hasMinLength ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(width: 8.0),
-                    const Text('Mínimo 8 caracteres'),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      hasNumber ? Icons.check : Icons.close,
-                      color: hasNumber ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(width: 8.0),
-                    const Text('Al menos un número'),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      confirmPasswordController.text.isNotEmpty
-                          ? (passwordsMatch ? Icons.check : Icons.close)
-                          : Icons.close,
-                      color:
-                          confirmPasswordController.text.isNotEmpty
-                              ? (passwordsMatch ? Colors.green : Colors.red)
-                              : Colors.red,
-                    ),
-                    const SizedBox(width: 8.0),
-                    const Text('Las contraseñas coinciden'),
-                  ],
-                ),
-              ],
-            ),
+            _buildPasswordRequirements(context),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
@@ -149,9 +113,26 @@ class _SignupPageState extends State<SignupPage> {
                     'Por favor, asegúrate de llenar todos los campos correctamente.',
                   );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cuenta creada exitosamente')),
-                  );
+                  authService
+                      .register(
+                        username: usernameController.text,
+                        email: emailController.text,
+                        password: passwordController.text,
+                      )
+                      .then((result) {
+                        if (result == "nothing") {
+                          _showAlert(
+                            'Este correo electrónico ya se encuentra registrado.',
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Cuenta creada exitosamente'),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      });
                 }
               },
               child: const Text('Crear Cuenta'),
@@ -214,6 +195,53 @@ class _SignupPageState extends State<SignupPage> {
           if (trailingIcon != null) trailingIcon,
         ],
       ),
+    );
+  }
+
+  Widget _buildPasswordRequirements(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Requisitos de la contraseña:',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Row(
+          children: [
+            Icon(
+              hasMinLength ? Icons.check : Icons.close,
+              color: hasMinLength ? Colors.green : Colors.red,
+            ),
+            const SizedBox(width: 8.0),
+            const Text('Mínimo 8 caracteres'),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(
+              hasNumber ? Icons.check : Icons.close,
+              color: hasNumber ? Colors.green : Colors.red,
+            ),
+            const SizedBox(width: 8.0),
+            const Text('Al menos un número'),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(
+              confirmPasswordController.text.isNotEmpty
+                  ? (passwordsMatch ? Icons.check : Icons.close)
+                  : Icons.close,
+              color:
+                  confirmPasswordController.text.isNotEmpty
+                      ? (passwordsMatch ? Colors.green : Colors.red)
+                      : Colors.red,
+            ),
+            const SizedBox(width: 8.0),
+            const Text('Las contraseñas coinciden'),
+          ],
+        ),
+      ],
     );
   }
 

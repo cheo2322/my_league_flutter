@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/main.dart';
-
-class LoginService {
-  Future<String?> login(String username, String password) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return (username == 'admin' && password == '1')
-        ? 'simulated_token_12345'
-        : null;
-  }
-}
+import 'package:my_league_flutter/web/auth_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -19,14 +11,14 @@ class LoginPage extends StatelessWidget {
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-    final LoginService loginService = LoginService();
+    final AuthService authService = AuthService();
 
     final primaryColor = Theme.of(context).primaryColor;
 
     Future<void> handleLogin() async {
-      final token = await loginService.login(
-        usernameController.text,
-        passwordController.text,
+      final token = await authService.login(
+        email: usernameController.text,
+        password: passwordController.text,
       );
 
       if (token != null) {
