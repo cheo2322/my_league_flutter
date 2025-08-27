@@ -1,5 +1,6 @@
 class PositionDto {
   final String team;
+  final String status;
   final int playedGames;
   final int points;
   final int favorGoals;
@@ -8,6 +9,7 @@ class PositionDto {
 
   const PositionDto({
     required this.team,
+    required this.status,
     required this.playedGames,
     required this.points,
     required this.favorGoals,
@@ -18,6 +20,7 @@ class PositionDto {
   factory PositionDto.fromJson(Map<String, dynamic> json) {
     return PositionDto(
       team: json['team'] as String,
+      status: json['status'] as String,
       playedGames: json['playedGames'] as int,
       points: json['points'] as int,
       favorGoals: json['favorGoals'] as int,
@@ -29,6 +32,7 @@ class PositionDto {
   Map<String, dynamic> toJson() {
     return {
       'team': team,
+      'status': status,
       'playedGames': playedGames,
       'points': points,
       'favorGoals': favorGoals,

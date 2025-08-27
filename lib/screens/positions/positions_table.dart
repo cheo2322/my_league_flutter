@@ -70,7 +70,7 @@ class PositionsTable extends StatelessWidget {
         ),
         Expanded(
           flex: 1,
-          child: Text('Pts', textAlign: TextAlign.center, style: headerStyle),
+          child: Text('P', textAlign: TextAlign.center, style: headerStyle),
         ),
         Expanded(
           flex: 1,
