@@ -19,6 +19,7 @@ class UserDrawer extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     await secureStorage.deleteAll();
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Sesión cerrada correctamente'),
@@ -26,6 +27,7 @@ class UserDrawer extends StatelessWidget {
         duration: Duration(seconds: 3),
       ),
     );
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
@@ -115,19 +117,8 @@ class UserDrawer extends StatelessWidget {
                   },
                 ),
 
-              ListTile(
-                leading: Icon(
-                  Icons.settings,
-                  color: Theme.of(context).primaryColor,
-                ),
-                title: const Text('Configuraciones'),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Configuraciones abiertas')),
-                  );
-                },
-              ),
               const Spacer(),
+
               if (tokenExists)
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),

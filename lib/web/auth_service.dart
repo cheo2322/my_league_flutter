@@ -34,7 +34,7 @@ class AuthService {
     }
   }
 
-  Future<String> login({
+  Future<String?> login({
     required String email,
     required String password,
   }) async {
@@ -44,13 +44,9 @@ class AuthService {
         data: {'email': email, 'password': password},
       );
 
-      return response.data.toString(); // Token o mensaje
+      return response.data.toString();
     } on DioException catch (e) {
-      if (e.response != null) {
-        throw Exception('Login fallido: ${e.response?.data}');
-      } else {
-        throw Exception('Error de red: ${e.message}');
-      }
+      return null;
     }
   }
 }

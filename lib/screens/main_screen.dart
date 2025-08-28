@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
+import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
@@ -12,8 +14,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final List<RoundDto> _rounds = [];
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   bool isLoading = true;
+  String? token;
+  String? username;
 
   Future<void> _fetchRounds() async {
     final service = LeagueService();
@@ -25,10 +30,16 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> readSavedCredentials() async {
+    token = await secureStorage.read(key: 'auth_token');
+    username = await secureStorage.read(key: 'username');
+  }
+
   @override
   void initState() {
     super.initState();
     _fetchRounds();
+    readSavedCredentials();
   }
 
   @override
@@ -56,19 +67,22 @@ class _MainScreenState extends State<MainScreen> {
                   );
                 },
               ),
-      // TODO: Activate when user is authenticated
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => NewLeague()),
-      //     );
-      //   },
-      //   tooltip: 'Agregar',
-      //   backgroundColor: primaryColor,
-      //   splashColor: Colors.white,
-      //   child: const Icon(Icons.add, color: Colors.white),
-      // ),
+
+      floatingActionButton:
+          (token != null && username != null)
+              ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NewLeague()),
+                  );
+                },
+                tooltip: 'Agregar',
+                backgroundColor: primaryColor,
+                splashColor: Colors.white,
+                child: const Icon(Icons.add, color: Colors.white),
+              )
+              : null,
     );
   }
 }
