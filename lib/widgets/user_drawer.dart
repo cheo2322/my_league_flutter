@@ -8,6 +8,7 @@ class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
 
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  static const redColor = Color.fromARGB(255, 239, 39, 25);
 
   Future<String?> _getToken() async {
     return await secureStorage.read(key: 'auth_token');
@@ -23,15 +24,12 @@ class UserDrawer extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Sesión cerrada correctamente'),
-        backgroundColor: Colors.red,
+        backgroundColor: redColor,
         duration: Duration(seconds: 3),
       ),
     );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
   }
 
   @override
@@ -51,23 +49,16 @@ class UserDrawer extends StatelessWidget {
               FutureBuilder<String?>(
                 future: _getUsername(),
                 builder: (context, usernameSnapshot) {
-                  if (usernameSnapshot.connectionState ==
-                      ConnectionState.waiting) {
+                  if (usernameSnapshot.connectionState == ConnectionState.waiting) {
                     return DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      ),
+                      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+                      child: const Center(child: CircularProgressIndicator(color: Colors.white)),
                     );
                   }
 
                   final username = usernameSnapshot.data;
                   return DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    decoration: BoxDecoration(color: Theme.of(context).primaryColor),
                     child: Center(
                       child: Text(
                         username ??
@@ -86,33 +77,23 @@ class UserDrawer extends StatelessWidget {
 
               if (!tokenExists)
                 ListTile(
-                  leading: Icon(
-                    Icons.login,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  leading: Icon(Icons.login, color: Theme.of(context).primaryColor),
                   title: const Text('Iniciar sesión'),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                   },
                 ),
               if (!tokenExists)
                 ListTile(
-                  leading: Icon(
-                    Icons.person_add,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  leading: Icon(Icons.person_add, color: Theme.of(context).primaryColor),
                   title: const Text('Crear cuenta'),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignupPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const SignupPage()),
                     );
                   },
                 ),
@@ -121,11 +102,8 @@ class UserDrawer extends StatelessWidget {
 
               if (tokenExists)
                 ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text(
-                    'Cerrar sesión',
-                    style: TextStyle(color: Colors.red),
-                  ),
+                  leading: const Icon(Icons.logout, color: redColor),
+                  title: const Text('Cerrar sesión', style: TextStyle(color: redColor)),
                   onTap: () => _logout(context),
                 ),
             ],

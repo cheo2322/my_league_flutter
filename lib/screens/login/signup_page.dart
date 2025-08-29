@@ -58,14 +58,21 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear Cuenta')),
+      appBar: AppBar(
+        title: const Text('Crear Cuenta', style: TextStyle(color: Colors.white)),
+        backgroundColor: primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildCustomTextField(
+              primaryColor,
               'Correo electrónico*',
               TextInputType.emailAddress,
               emailController,
@@ -77,6 +84,7 @@ class _SignupPageState extends State<SignupPage> {
             // _buildCustomTextField('Usuario*', TextInputType.text, usernameController),
             // const SizedBox(height: 16.0),
             _buildCustomTextField(
+              primaryColor,
               'Contraseña*',
               TextInputType.text,
               passwordController,
@@ -85,6 +93,7 @@ class _SignupPageState extends State<SignupPage> {
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
+              primaryColor,
               'Repetir Contraseña*',
               TextInputType.text,
               confirmPasswordController,
@@ -102,6 +111,10 @@ class _SignupPageState extends State<SignupPage> {
             _buildPasswordRequirements(context),
             const SizedBox(height: 16.0),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
               onPressed: () {
                 if (passwordController.text.isEmpty ||
                     confirmPasswordController.text.isEmpty ||
@@ -124,7 +137,11 @@ class _SignupPageState extends State<SignupPage> {
                           secureStorage.write(key: 'auth_token', value: result.token);
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cuenta creada exitosamente')),
+                            SnackBar(
+                              content: Text('Cuenta creada exitosamente'),
+                              backgroundColor: primaryColor,
+                              duration: const Duration(seconds: 3),
+                            ),
                           );
 
                           Navigator.pushReplacement(
@@ -135,7 +152,7 @@ class _SignupPageState extends State<SignupPage> {
                       });
                 }
               },
-              child: const Text('Crear Cuenta'),
+              child: const Text('Crear Cuenta', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -158,6 +175,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildCustomTextField(
+    Color primaryColor,
     String labelText,
     TextInputType keyboardType,
     TextEditingController? controller, {
@@ -168,11 +186,7 @@ class _SignupPageState extends State<SignupPage> {
     Widget? trailingIcon,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: errorText == null ? Colors.grey : Colors.red),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
         children: [
           Expanded(
@@ -183,9 +197,12 @@ class _SignupPageState extends State<SignupPage> {
               focusNode: focusNode,
               decoration: InputDecoration(
                 labelText: labelText,
-                border: InputBorder.none,
+                border: const OutlineInputBorder(),
                 errorText: errorText,
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
+                floatingLabelStyle: TextStyle(color: primaryColor),
               ),
+              cursorColor: primaryColor,
               onChanged: onChanged,
             ),
           ),
