@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
-import 'package:my_league_flutter/web/league_service.dart';
+import 'package:my_league_flutter/web/main_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,10 +13,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<RoundDto> _rounds = [];
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-
   final List<Tab> tabs = [Tab(icon: Icon(Icons.star)), Tab(icon: Icon(Icons.location_on))];
+
+  final MainService _mainService = MainService();
+
+  List<RoundDto> _rounds = [];
 
   bool isLoading = true;
   String? token;
@@ -139,18 +141,6 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Future<void> _fetchRounds() async {
-    final service = LeagueService();
-    final rounds = await service.getMainPage();
-
-    if (mounted) {
-      setState(() {
-        _rounds.addAll(rounds);
-        isLoading = false;
-      });
-    }
-  }
-
   Future<void> readSavedCredentials() async {
     token = await secureStorage.read(key: 'auth_token');
     username = await secureStorage.read(key: 'username');
@@ -160,11 +150,21 @@ class _MainScreenState extends State<MainScreen> {
     await readSavedCredentials();
 
     if (token != null && username != null) {
-      await _fetchRounds();
+      await _fetchFavourites();
     }
 
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> _fetchFavourites() async {
+    final favourites = await _mainService.getFavourites();
+
+    if (favourites != null) {
+      setState(() {
+        _rounds = favourites.leagues.map((league) => league.roundDto).toList();
+      });
+    }
   }
 }
