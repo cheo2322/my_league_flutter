@@ -52,10 +52,11 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
+                  // Favourites Tab
                   isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : _rounds.isEmpty
-                      ? const Center(child: Text("No hay partidos disponibles"))
+                      ? Builder(builder: (context) => _buildDefaultTab(context))
                       : ListView.builder(
                         itemCount: _rounds.length,
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -71,6 +72,8 @@ class _MainScreenState extends State<MainScreen> {
                           );
                         },
                       ),
+
+                  // Near to you Tab
                   const Center(child: Text("Cerca de ti - En desarrollo")),
                 ],
               ),
@@ -89,6 +92,49 @@ class _MainScreenState extends State<MainScreen> {
                   child: const Icon(Icons.add, color: Colors.white),
                 )
                 : null,
+      ),
+    );
+  }
+
+  Center _buildDefaultTab(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.search,
+            size: 48,
+            color: Colors.grey,
+          ), // TODO: make it open the search bar
+          const SizedBox(height: 12),
+          const Text(
+            "Aún no tienes favoritos",
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              final controller = DefaultTabController.of(context);
+              controller.animateTo(1);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.location_on, size: 20, color: Colors.blueGrey),
+                SizedBox(width: 4),
+                Text(
+                  "Buscar partidos cerca de ti",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.blueGrey,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
