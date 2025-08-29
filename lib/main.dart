@@ -36,11 +36,7 @@ class _HomePageState extends State<HomePage> {
   bool _isSearching = false;
   final FocusNode _searchFocusNode = FocusNode();
 
-  final List<Widget> _pages = [
-    const MainScreen(),
-    const MyField(),
-    const ThirdPage(),
-  ];
+  final List<Widget> _pages = [const MainScreen(), const MyField(), const ThirdPage()];
 
   @override
   void initState() {
@@ -83,7 +79,7 @@ class _HomePageState extends State<HomePage> {
         // TODO: Add logic for Search bar
         title: Text(
           _selectedIndex == 0
-              ? 'Partidos'
+              ? 'Principal'
               : _selectedIndex == 1
               ? 'Mi cancha'
               : 'Notificaciones',
@@ -96,15 +92,9 @@ class _HomePageState extends State<HomePage> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.futbol),
-            label: 'Partidos',
-          ),
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.futbol), label: 'Partidos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi cancha'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notificaciones',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notificaciones'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

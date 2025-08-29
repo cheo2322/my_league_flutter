@@ -46,10 +46,7 @@ class _MyFieldState extends State<MyField> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          isLoadingMain
-              ? Center(child: CircularProgressIndicator())
-              : _buildMainContent(context),
+      body: isLoadingMain ? Center(child: CircularProgressIndicator()) : _buildMainContent(context),
     );
   }
 
@@ -61,10 +58,7 @@ class _MyFieldState extends State<MyField> {
     return ListView(
       children: [
         _buildSectionHeader('Mis Torneos', () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => NewLeague()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => NewLeague()));
         }),
         _buildLeaguesSection(context),
         Divider(thickness: 2),
@@ -87,23 +81,27 @@ class _MyFieldState extends State<MyField> {
       });
     } catch (error) {
       print('Error al obtener ligas: $error');
-      setState(() {
-        isLoadingLeagues = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoadingLeagues = false;
+        });
+      }
     }
   }
 
   Future<void> _loadTeams() async {
     await Future.delayed(Duration(milliseconds: 3000));
-    setState(() {
-      teams = [
-        // DefaultDto(id: '1', name: 'Team A'),
-        // DefaultDto(id: '2', name: 'Team B'),
-        // DefaultDto(id: '3', name: 'Team C'),
-        // DefaultDto(id: '4', name: 'Team D'),
-      ];
-      isLoadingTeams = false;
-    });
+    if (mounted) {
+      setState(() {
+        teams = [
+          // DefaultDto(id: '1', name: 'Team A'),
+          // DefaultDto(id: '2', name: 'Team B'),
+          // DefaultDto(id: '3', name: 'Team C'),
+          // DefaultDto(id: '4', name: 'Team D'),
+        ];
+        isLoadingTeams = false;
+      });
+    }
   }
 
   Future<void> readSavedCredentials() async {
@@ -130,10 +128,7 @@ class _MyFieldState extends State<MyField> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           IconButton(icon: Icon(Icons.add), onPressed: onAddPressed),
         ],
       ),
@@ -150,10 +145,7 @@ class _MyFieldState extends State<MyField> {
           SizedBox(height: 5),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => NewLeague()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => NewLeague()));
             },
             icon: Icon(Icons.add),
             label: Text('Crear un torneo'),
@@ -173,10 +165,7 @@ class _MyFieldState extends State<MyField> {
           elevation: 3,
           child: ListTile(
             leading: Icon(Icons.sports_soccer),
-            title: Text(
-              league.name,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            title: Text(league.name, style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('League ID: ${league.id}'),
             onTap: () {
               Navigator.push(
@@ -232,15 +221,12 @@ class _MyFieldState extends State<MyField> {
           elevation: 3,
           child: ListTile(
             leading: Icon(Icons.group),
-            title: Text(
-              team.name,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            title: Text(team.name, style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('Team ID: ${team.id}'),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Equipo seleccionado: ${team.name}')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Equipo seleccionado: ${team.name}')));
             },
           ),
         );
