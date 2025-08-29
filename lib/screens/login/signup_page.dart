@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_league_flutter/main.dart';
 import 'package:my_league_flutter/web/auth_service.dart';
 
 class SignupPage extends StatefulWidget {
@@ -16,6 +18,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   bool hasMinLength = false;
   bool hasNumber = false;
@@ -114,13 +117,20 @@ class _SignupPageState extends State<SignupPage> {
                         password: passwordController.text,
                       )
                       .then((result) {
-                        if (result == "nothing") {
+                        if (result == null) {
                           _showAlert('Este correo electrónico ya se encuentra registrado.');
                         } else {
+                          secureStorage.write(key: 'username', value: result.email);
+                          secureStorage.write(key: 'auth_token', value: result.token);
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Cuenta creada exitosamente')),
                           );
-                          Navigator.pop(context);
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomePage()),
+                          );
                         }
                       });
                 }

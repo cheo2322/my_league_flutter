@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/model/login_dto.dart';
 
 class AuthService {
   final Dio _dio;
@@ -8,7 +9,7 @@ class AuthService {
           dio ??
           Dio(BaseOptions(baseUrl: 'https://my-league-backend.onrender.com/my_league/v1/auth'));
 
-  Future<String> register({
+  Future<LoginDto?> register({
     required String username,
     required String email,
     required String password,
@@ -19,10 +20,19 @@ class AuthService {
         data: {'username': username, 'email': email, 'password': password},
       );
 
-      return response.data.toString();
+      final statusCode = response.statusCode;
+
+      if (statusCode == 200) {
+        return LoginDto.fromJson(response.data);
+      } else {
+        return null;
+      }
     } on DioException catch (e) {
       if (e.response != null) {
-        return "nothing";
+        final errorCode = e.response?.statusCode;
+        final errorMessage = e.response?.data.toString();
+        print('Error $errorCode: $errorMessage');
+        return null;
       } else {
         throw Exception('Error de red: ${e.message}');
       }
