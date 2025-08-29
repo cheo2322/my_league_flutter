@@ -6,12 +6,7 @@ class AuthService {
   AuthService({Dio? dio})
     : _dio =
           dio ??
-          Dio(
-            BaseOptions(
-              baseUrl:
-                  'https://my-league-backend.onrender.com/my_league/v1/auth',
-            ),
-          );
+          Dio(BaseOptions(baseUrl: 'https://my-league-backend.onrender.com/my_league/v1/auth'));
 
   Future<String> register({
     required String username,
@@ -34,18 +29,12 @@ class AuthService {
     }
   }
 
-  Future<String?> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<String?> login({required String email, required String password}) async {
     try {
-      final response = await _dio.post(
-        '/login',
-        data: {'email': email, 'password': password},
-      );
+      final response = await _dio.post('/login', data: {'email': email, 'password': password});
 
       return response.data.toString();
-    } on DioException catch (e) {
+    } on DioException {
       return null;
     }
   }

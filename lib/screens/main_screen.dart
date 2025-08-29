@@ -24,10 +24,12 @@ class _MainScreenState extends State<MainScreen> {
     final service = LeagueService();
     final rounds = await service.getMainPage();
 
-    setState(() {
-      _rounds.addAll(rounds);
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _rounds.addAll(rounds);
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> readSavedCredentials() async {
@@ -72,10 +74,7 @@ class _MainScreenState extends State<MainScreen> {
           (token != null && username != null)
               ? FloatingActionButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NewLeague()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewLeague()));
                 },
                 tooltip: 'Agregar',
                 backgroundColor: primaryColor,

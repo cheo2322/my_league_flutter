@@ -14,8 +14,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
 
   bool hasMinLength = false;
@@ -71,12 +70,9 @@ class _SignupPageState extends State<SignupPage> {
               errorText: emailErrorText,
             ),
             const SizedBox(height: 16.0),
-            _buildCustomTextField(
-              'Usuario*',
-              TextInputType.text,
-              usernameController,
-            ),
-            const SizedBox(height: 16.0),
+            // TODO: Add in v2
+            // _buildCustomTextField('Usuario*', TextInputType.text, usernameController),
+            // const SizedBox(height: 16.0),
             _buildCustomTextField(
               'Contraseña*',
               TextInputType.text,
@@ -109,9 +105,7 @@ class _SignupPageState extends State<SignupPage> {
                     !hasMinLength ||
                     !hasNumber ||
                     !passwordsMatch) {
-                  _showAlert(
-                    'Por favor, asegúrate de llenar todos los campos correctamente.',
-                  );
+                  _showAlert('Por favor, asegúrate de llenar todos los campos correctamente.');
                 } else {
                   authService
                       .register(
@@ -121,14 +115,10 @@ class _SignupPageState extends State<SignupPage> {
                       )
                       .then((result) {
                         if (result == "nothing") {
-                          _showAlert(
-                            'Este correo electrónico ya se encuentra registrado.',
-                          );
+                          _showAlert('Este correo electrónico ya se encuentra registrado.');
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Cuenta creada exitosamente'),
-                            ),
+                            const SnackBar(content: Text('Cuenta creada exitosamente')),
                           );
                           Navigator.pop(context);
                         }
@@ -151,10 +141,7 @@ class _SignupPageState extends State<SignupPage> {
             title: const Text('Error'),
             content: Text(message),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
+              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK')),
             ],
           ),
     );
@@ -202,10 +189,7 @@ class _SignupPageState extends State<SignupPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Requisitos de la contraseña:',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text('Requisitos de la contraseña:', style: Theme.of(context).textTheme.titleMedium),
         Row(
           children: [
             Icon(
@@ -250,9 +234,7 @@ class _SignupPageState extends State<SignupPage> {
       return "El correo es obligatorio";
     }
 
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
     if (!emailRegex.hasMatch(email)) {
       return "El formato del correo es incorrecto";

@@ -37,13 +37,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> handleLogin() async {
     setState(() => isLoading = true);
+    final primaryColor = Theme.of(context).primaryColor;
 
     final token = await authService.login(
       email: usernameController.text,
       password: passwordController.text,
     );
-
-    final primaryColor = Theme.of(context).primaryColor;
 
     if (token != null) {
       await secureStorage.write(key: 'auth_token', value: token);
