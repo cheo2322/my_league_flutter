@@ -159,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _fetchFavourites() async {
-    final favourites = await _mainService.getFavourites();
+    final favourites = await _mainService.getFavourites(token!);
 
     if (favourites != null) {
       setState(() {

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/model/favourites_dto.dart';
 
 class MainService {
@@ -8,11 +7,8 @@ class MainService {
   MainService({String baseUrl = "https://my-league-backend.onrender.com/my_league/v1/main"})
     : _dio = Dio(BaseOptions(baseUrl: baseUrl));
 
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-
-  Future<FavouritesDto?> getFavourites() async {
+  Future<FavouritesDto?> getFavourites(String token) async {
     try {
-      final token = await secureStorage.read(key: 'auth_token');
       final response = await _dio.get(
         "/favourites",
         options: Options(headers: {"Authorization": "Bearer $token"}),
