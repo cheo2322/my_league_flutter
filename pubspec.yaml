@@ -26,6 +26,6 @@ flutter:
     - assets/icons/logo_mi_futbol_v5.svg
 
 flutter_launcher_icons:
-  image_path: 'assets/icons/logo_mi_futbol_v2.png'
+  image_path: 'assets/icons/logo_mi_futbol_v2_1024.png'
   android: true
   ios: true
