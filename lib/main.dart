@@ -1,8 +1,10 @@
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_league_flutter/screens/main_screen.dart';
 import 'package:my_league_flutter/screens/second_page.dart';
 import 'package:my_league_flutter/screens/third_page.dart';
+import 'package:my_league_flutter/widgets/icon.dart';
 import 'package:my_league_flutter/widgets/user_drawer.dart';
 
 void main() {
@@ -91,10 +93,17 @@ class _HomePageState extends State<HomePage> {
       drawer: UserDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.futbol), label: 'Partidos'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi cancha'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notificaciones'),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.sports_soccer), label: 'Partidos'),
+          BottomNavigationBarItem(
+            icon: MyLeagueIcon(selected: _selectedIndex == 1, selectedColor: primaryColor),
+            label: 'Mi cancha',
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none_outlined),
+            label: 'Notificaciones',
+          ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
