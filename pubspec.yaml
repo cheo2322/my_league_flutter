@@ -1,5 +1,5 @@
 name: my_league_flutter
-description: "A new Flutter project."
+description: 'A new Flutter project.'
 publish_to: 'none'
 version: 0.1.0
 
@@ -18,6 +18,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/logo_mi_futbol_v5.svg
+
+flutter_launcher_icons:
+  image_path: 'assets/icons/logo_mi_futbol_v2.png'
+  android: true
+  ios: true
