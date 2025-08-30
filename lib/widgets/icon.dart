@@ -10,7 +10,7 @@ class MyLeagueIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      'assets/icons/logo_mi_futbol_v5.svg',
+      'assets/prod/icons/logo_mi_futbol_v5.svg',
       width: 24,
       height: 24,
       colorFilter: ColorFilter.mode(selected ? selectedColor : Colors.grey[600]!, BlendMode.srcIn),
