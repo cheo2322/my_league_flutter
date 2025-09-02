@@ -30,6 +30,7 @@ flutter_launcher_icons:
   image_path: 'assets/prod/launcher/logo_mi_futbol_v9_1024.png'
   android: true
   ios: true
+  remove_alpha_ios: true
 
 flutter_native_splash:
   image: assets/prod/branding/logo_mi_futbol_v9_512.png
