@@ -38,12 +38,17 @@ class MatchService {
     String matchId,
     int homeResult,
     int visitResult,
+    bool finalize,
     String? token,
   ) async {
     try {
       final response = await _dio.patch(
         '/matches/$matchId',
-        queryParameters: {'homeResult': homeResult, 'visitResult': visitResult},
+        queryParameters: {
+          'homeResult': homeResult,
+          'visitResult': visitResult,
+          'isFinished': finalize,
+        },
         options: Options(headers: {"Authorization": "Bearer ${token ?? ''}"}),
       );
 

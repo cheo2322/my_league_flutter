@@ -42,10 +42,11 @@ class _MatchState extends State<Match> {
     String matchId,
     int homeResult,
     int visitResult,
+    bool finalize,
     String? token,
   ) async {
     final matchService = MatchService();
-    return await matchService.updateMatchResult(matchId, homeResult, visitResult, token);
+    return await matchService.updateMatchResult(matchId, homeResult, visitResult, finalize, token);
   }
 
   @override
@@ -275,85 +276,137 @@ class _MatchState extends State<Match> {
   void _showEditDialog(BuildContext context, MatchDto match, Color primaryColor) {
     final homeController = TextEditingController(text: match.homeResult?.toString() ?? '');
     final visitController = TextEditingController(text: match.visitResult?.toString() ?? '');
+    bool finalizeMatch = false;
 
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Editar marcador'),
-          content: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: homeController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: match.homeTeam,
-                    hintText: 'Actual: ${match.homeResult ?? '-'}',
-                  ),
+      builder: (_) {
+        return StatefulBuilder(
+          builder:
+              (context, setState) => AlertDialog(
+                title: const Text('Editar marcador'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                match.homeTeam,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextField(
+                                controller: homeController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: 'Actual: ${match.homeResult ?? '-'}',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                match.visitTeam,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextField(
+                                controller: visitController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: 'Actual: ${match.visitResult ?? '-'}',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: finalizeMatch,
+                          onChanged: (value) => setState(() => finalizeMatch = value ?? false),
+                        ),
+                        const Expanded(
+                          child: Text(
+                            'Finalizar el partido',
+                            style: TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: visitController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: match.visitTeam,
-                    hintText: 'Actual: ${match.visitResult ?? '-'}',
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancelar'),
                   ),
-                ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final newHome = int.tryParse(homeController.text);
+                      final newVisit = int.tryParse(visitController.text);
+                      final primaryColor = Theme.of(context).primaryColor;
+
+                      if (newHome == null || newVisit == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Ingrese un resultado válido'),
+                            backgroundColor: Colors.amber,
+                          ),
+                        );
+                        return;
+                      }
+
+                      final success = await _updateMatchResult(
+                        match.id!,
+                        newHome,
+                        newVisit,
+                        finalizeMatch,
+                        token,
+                      );
+
+                      if (success) {
+                        final updatedDetails = await _fetchMatchDetails(match.id!, token);
+                        setState(() {
+                          matchDetails = updatedDetails;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Actualizado correctamente'),
+                            backgroundColor: primaryColor,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error al actualizar el marcador'),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Guardar'),
+                  ),
+                ],
               ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
-            ElevatedButton(
-              onPressed: () async {
-                final newHome = int.tryParse(homeController.text);
-                final newVisit = int.tryParse(visitController.text);
-
-                if (newHome == null || newVisit == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'Ingrese un resultado válido',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      backgroundColor: Colors.amber,
-                    ),
-                  );
-                  return;
-                }
-
-                final success = await _updateMatchResult(match.id!, newHome, newVisit, token);
-
-                if (success) {
-                  final updatedDetails = await _fetchMatchDetails(match.id!, token);
-                  setState(() {
-                    matchDetails = updatedDetails;
-                  });
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Actualizado correctamente'),
-                      backgroundColor: primaryColor,
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Error al actualizar el marcador'),
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  );
-                }
-
-                Navigator.of(context).pop();
-              },
-              child: const Text('Guardar'),
-            ),
-          ],
         );
       },
     );
