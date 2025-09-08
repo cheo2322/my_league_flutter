@@ -20,9 +20,12 @@ class MatchService {
     }
   }
 
-  Future<MatchDetailsDto?> getMatchDetails(String matchId) async {
+  Future<MatchDetailsDto?> getMatchDetails(String matchId, String? token) async {
     try {
-      final response = await _dio.get('/matches/$matchId/details');
+      final response = await _dio.get(
+        '/matches/$matchId/details',
+        options: Options(headers: {"Authorization": "Bearer ${token ?? ''}"}),
+      );
       print("Fetched match details: ${response.data}");
       return MatchDetailsDto.fromJson(response.data);
     } catch (e) {

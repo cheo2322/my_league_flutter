@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/model/match_details.dart';
 import 'package:my_league_flutter/model/match_dto.dart';
 import 'package:my_league_flutter/web/match_service.dart';
@@ -14,6 +15,8 @@ class Match extends StatefulWidget {
 }
 
 class _MatchState extends State<Match> {
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
   final List<Tab> tabs = [Tab(text: 'Eventos'), Tab(text: 'Alineaciones')];
   final TextStyle normalStyle = const TextStyle(fontSize: 14, color: Colors.white);
   final TextStyle winnerStyle = const TextStyle(
@@ -26,9 +29,13 @@ class _MatchState extends State<Match> {
 
   bool isLoadingMatchDetails = true;
 
-  Future<MatchDetailsDto?> _fetchMatchDetails(String matchId) async {
+  Future<MatchDetailsDto?> _fetchMatchDetails(String matchId, String? token) async {
     final matchService = MatchService();
-    return await matchService.getMatchDetails(matchId);
+    return await matchService.getMatchDetails(matchId, token);
+  }
+
+  Future<String?> _readSavedCredentials() async {
+    return await secureStorage.read(key: 'auth_token');
   }
 
   @override
@@ -36,17 +43,15 @@ class _MatchState extends State<Match> {
     super.initState();
 
     if (mounted) {
-      _fetchMatchDetails(widget.match.id!).then((details) {
-        if (mounted && details != null) {
-          Future.delayed(const Duration(milliseconds: 1500), () {
-            if (mounted) {
-              setState(() {
-                matchDetails = details;
-                isLoadingMatchDetails = false;
-              });
-            }
-          });
-        }
+      _readSavedCredentials().then((token) {
+        _fetchMatchDetails(widget.match.id!, token).then((details) {
+          if (details != null) {
+            setState(() {
+              matchDetails = details;
+            });
+          }
+          isLoadingMatchDetails = false;
+        });
       });
     }
   }
@@ -107,7 +112,7 @@ class _MatchState extends State<Match> {
               ),
               const SizedBox(width: 16),
 
-              if (widget.match.status == "FINISHED")
+              if (matchDetails != null && matchDetails!.isTheOwner == true)
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
@@ -118,7 +123,7 @@ class _MatchState extends State<Match> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Text(
-                        'FINALIZADO',
+                        'EDITAR',
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
