@@ -116,15 +116,18 @@ class _MatchState extends State<Match> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white24,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'EDITAR',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    child: GestureDetector(
+                      onTap: () => _showEditDialog(context, widget.match),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'EDITAR',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
@@ -257,4 +260,55 @@ class _MatchState extends State<Match> {
 
   bool isVisitWinner(MatchDto match) =>
       match.status == "FINISHED" && (match.homeResult ?? 0) < (match.visitResult ?? 0);
+
+  void _showEditDialog(BuildContext context, MatchDto match) {
+    final homeController = TextEditingController(text: match.homeResult?.toString() ?? '');
+    final visitController = TextEditingController(text: match.visitResult?.toString() ?? '');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Editar marcador'),
+          content: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: homeController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: match.homeTeam,
+                    hintText: 'Actual: ${match.homeResult ?? '-'}',
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: visitController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: match.visitTeam,
+                    hintText: 'Actual: ${match.visitResult ?? '-'}',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
+            ElevatedButton(
+              onPressed: () {
+                final newHome = int.tryParse(homeController.text);
+                final newVisit = int.tryParse(visitController.text);
+                // Guardar resultados aquí
+                Navigator.of(context).pop();
+              },
+              child: const Text('Guardar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
