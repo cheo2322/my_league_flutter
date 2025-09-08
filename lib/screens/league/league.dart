@@ -35,9 +35,7 @@ class _LeagueState extends State<League> {
   List<PhaseDto> phases = [];
 
   Future<List<RoundDto>> _fetchRounds() async {
-    return await leagueService.getRoundsFromActivePhaseByLeagueId(
-      widget.leagueDto.id,
-    );
+    return await leagueService.getRoundsFromActivePhaseByLeagueId(widget.leagueDto.id);
   }
 
   Future<PositionsTableDto?> _fetchPositions(
@@ -57,23 +55,25 @@ class _LeagueState extends State<League> {
   void initState() {
     super.initState();
 
-    _fetchRounds().then((response) {
-      setState(() {
-        _rounds = response;
-        isLoadingMatches = false;
+    if (mounted) {
+      _fetchRounds().then((response) {
+        setState(() {
+          _rounds = response;
+          isLoadingMatches = false;
+        });
       });
-    });
 
-    _fetchPositions(
-      widget.leagueDto.id,
-      widget.leagueDto.activePhaseId,
-      widget.leagueDto.activeRoundId,
-    ).then((response) {
-      setState(() {
-        _positionsTable = response;
-        isLoadingPositions = false;
+      _fetchPositions(
+        widget.leagueDto.id,
+        widget.leagueDto.activePhaseId,
+        widget.leagueDto.activeRoundId,
+      ).then((response) {
+        setState(() {
+          _positionsTable = response;
+          isLoadingPositions = false;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -85,10 +85,7 @@ class _LeagueState extends State<League> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
-          title: Text(
-            widget.leagueDto.name,
-            style: TextStyle(fontSize: 18, color: Colors.white),
-          ),
+          title: Text(widget.leagueDto.name, style: TextStyle(fontSize: 18, color: Colors.white)),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
@@ -110,17 +107,13 @@ class _LeagueState extends State<League> {
               children: [
                 ListView.builder(
                   itemCount: _rounds.length,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: RoundCard(
                         round: _rounds[index],
-                        title:
-                            '${_rounds[index].phase} - Fecha ${_rounds[index].order}',
+                        title: '${_rounds[index].phase} - Fecha ${_rounds[index].order}',
                       ),
                     );
                   },
@@ -140,16 +133,11 @@ class _LeagueState extends State<League> {
                 if (_positionsTable != null)
                   ListView.builder(
                     itemCount: 1,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                      vertical: 8,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
-                        child: PositionsTable(
-                          positions: _positionsTable!.positions,
-                        ),
+                        child: PositionsTable(positions: _positionsTable!.positions),
                       );
                     },
                   ),

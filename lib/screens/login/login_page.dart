@@ -29,9 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _updateButtonState() {
     setState(() {
-      isButtonEnabled =
-          usernameController.text.isNotEmpty &&
-          passwordController.text.isNotEmpty;
+      isButtonEnabled = usernameController.text.isNotEmpty && passwordController.text.isNotEmpty;
     });
   }
 
@@ -46,23 +44,19 @@ class _LoginPageState extends State<LoginPage> {
 
     if (token != null) {
       await secureStorage.write(key: 'auth_token', value: token);
-      await secureStorage.write(
-        key: 'username',
-        value: usernameController.text,
-      );
+      await secureStorage.write(key: 'username', value: usernameController.text);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Login exitoso'),
-          backgroundColor: primaryColor,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Login exitoso'),
+            backgroundColor: primaryColor,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -84,10 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text(
-              'Iniciar sesión',
-              style: TextStyle(color: Colors.white),
-            ),
+            title: const Text('Iniciar sesión', style: TextStyle(color: Colors.white)),
             backgroundColor: primaryColor,
             iconTheme: const IconThemeData(color: Colors.white),
           ),
@@ -102,9 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: 'Correo electrónico',
                     hintText: 'correo@ejemplo.com',
                     border: const OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: primaryColor),
-                    ),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
                     floatingLabelStyle: TextStyle(color: primaryColor),
                   ),
                   cursorColor: primaryColor,
@@ -117,15 +106,9 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: isButtonEnabled ? handleLogin : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 50,
-                        vertical: 15,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     ),
-                    child: const Text(
-                      'Entrar',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: const Text('Entrar', style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

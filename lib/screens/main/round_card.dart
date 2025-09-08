@@ -3,6 +3,7 @@ import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/match/match_card.dart';
+import 'package:my_league_flutter/screens/match/match_page.dart';
 
 class RoundCard extends StatelessWidget {
   final RoundDto round;
@@ -50,9 +51,7 @@ class RoundCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               decoration: BoxDecoration(
                 color: primaryColor,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(4),
-                ),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
               ),
               child: Center(
                 child: Text(
@@ -75,9 +74,18 @@ class RoundCard extends StatelessWidget {
                 final match = round.matches[i];
                 return Column(
                   children: [
-                    MatchCard(match: match),
-                    if (i < round.matches.length - 1)
-                      const Divider(height: 8, thickness: 1),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Match(match: match, leagueName: round.leagueName),
+                          ),
+                        );
+                      },
+                      child: MatchCard(match: match),
+                    ),
+                    if (i < round.matches.length - 1) const Divider(height: 8, thickness: 1),
                   ],
                 );
               }),

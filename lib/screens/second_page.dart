@@ -90,7 +90,7 @@ class _MyFieldState extends State<MyField> {
   }
 
   Future<void> _loadTeams() async {
-    await Future.delayed(Duration(milliseconds: 3000));
+    await Future.delayed(Duration(milliseconds: 1500));
     if (mounted) {
       setState(() {
         teams = [

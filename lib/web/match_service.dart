@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/model/match_details.dart';
 import 'package:my_league_flutter/model/match_dto.dart';
 
 class MatchService {
   final Dio _dio;
 
-  MatchService({
-    String baseUrl = "https://my-league-backend.onrender.com/my_league/v1",
-  }) : _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  MatchService({String baseUrl = "https://my-league-backend.onrender.com/my_league/v1"})
+    : _dio = Dio(BaseOptions(baseUrl: baseUrl));
 
+  @Deprecated("Not available")
   Future<List<MatchDto>> getMatches() async {
     try {
       final response = await _dio.get('/matches');
@@ -16,6 +17,17 @@ class MatchService {
     } catch (e) {
       print("Error fetching matches: $e");
       return [];
+    }
+  }
+
+  Future<MatchDetailsDto?> getMatchDetails(String matchId) async {
+    try {
+      final response = await _dio.get('/matches/$matchId/details');
+      print("Fetched match details: ${response.data}");
+      return MatchDetailsDto.fromJson(response.data);
+    } catch (e) {
+      print("Error fetching match details: $e");
+      return null;
     }
   }
 }
