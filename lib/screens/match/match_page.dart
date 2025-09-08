@@ -26,7 +26,7 @@ class _MatchState extends State<Match> {
   );
 
   MatchDetailsDto? matchDetails;
-
+  String? token;
   bool isLoadingMatchDetails = true;
 
   Future<MatchDetailsDto?> _fetchMatchDetails(String matchId, String? token) async {
@@ -38,12 +38,23 @@ class _MatchState extends State<Match> {
     return await secureStorage.read(key: 'auth_token');
   }
 
+  Future<bool> _updateMatchResult(
+    String matchId,
+    int homeResult,
+    int visitResult,
+    String? token,
+  ) async {
+    final matchService = MatchService();
+    return await matchService.updateMatchResult(matchId, homeResult, visitResult, token);
+  }
+
   @override
   void initState() {
     super.initState();
 
     if (mounted) {
       _readSavedCredentials().then((token) {
+        this.token = token;
         _fetchMatchDetails(widget.match.id!, token).then((details) {
           if (details != null) {
             setState(() {
@@ -117,7 +128,7 @@ class _MatchState extends State<Match> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () => _showEditDialog(context, widget.match),
+                      onTap: () => _showEditDialog(context, widget.match, color),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
@@ -261,7 +272,7 @@ class _MatchState extends State<Match> {
   bool isVisitWinner(MatchDto match) =>
       match.status == "FINISHED" && (match.homeResult ?? 0) < (match.visitResult ?? 0);
 
-  void _showEditDialog(BuildContext context, MatchDto match) {
+  void _showEditDialog(BuildContext context, MatchDto match, Color primaryColor) {
     final homeController = TextEditingController(text: match.homeResult?.toString() ?? '');
     final visitController = TextEditingController(text: match.visitResult?.toString() ?? '');
 
@@ -298,10 +309,46 @@ class _MatchState extends State<Match> {
           actions: [
             TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final newHome = int.tryParse(homeController.text);
                 final newVisit = int.tryParse(visitController.text);
-                // Guardar resultados aquí
+
+                if (newHome == null || newVisit == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'Ingrese un resultado válido',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      backgroundColor: Colors.amber,
+                    ),
+                  );
+                  return;
+                }
+
+                final success = await _updateMatchResult(match.id!, newHome, newVisit, token);
+
+                if (success) {
+                  final updatedDetails = await _fetchMatchDetails(match.id!, token);
+                  setState(() {
+                    matchDetails = updatedDetails;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Actualizado correctamente'),
+                      backgroundColor: primaryColor,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Error al actualizar el marcador'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+
                 Navigator.of(context).pop();
               },
               child: const Text('Guardar'),

@@ -33,4 +33,30 @@ class MatchService {
       return null;
     }
   }
+
+  Future<bool> updateMatchResult(
+    String matchId,
+    int homeResult,
+    int visitResult,
+    String? token,
+  ) async {
+    try {
+      final response = await _dio.patch(
+        '/matches/$matchId',
+        queryParameters: {'homeResult': homeResult, 'visitResult': visitResult},
+        options: Options(headers: {"Authorization": "Bearer ${token ?? ''}"}),
+      );
+
+      if (response.statusCode == 200 && response.data == "OK") {
+        print("Resultado actualizado correctamente");
+        return true;
+      } else {
+        print("Error inesperado: ${response.statusCode} → ${response.data}");
+        return false;
+      }
+    } catch (e) {
+      print("Error al actualizar resultado: $e");
+      return false;
+    }
+  }
 }
