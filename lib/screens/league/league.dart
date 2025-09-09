@@ -34,23 +34,6 @@ class _LeagueState extends State<League> {
   PositionsTableDto? _positionsTable;
   List<PhaseDto> phases = [];
 
-  Future<List<RoundDto>> _fetchRounds() async {
-    return await leagueService.getRoundsFromActivePhaseByLeagueId(widget.leagueDto.id);
-  }
-
-  Future<PositionsTableDto?> _fetchPositions(
-    String leagueId,
-    String phaseId,
-    String roundId,
-  ) async {
-    try {
-      return await leagueService.getLeaguePositions(leagueId, phaseId, roundId);
-    } catch (e) {
-      print("Error in _fetchPositions: $e");
-      return null; //TODO: Handle error
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -105,18 +88,36 @@ class _LeagueState extends State<League> {
             // Matches tab
             Stack(
               children: [
-                ListView.builder(
-                  itemCount: _rounds.length,
+                ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: RoundCard(
-                        round: _rounds[index],
-                        title: '${_rounds[index].phase} - Fecha ${_rounds[index].order}',
+                  children: [
+                    const SizedBox(height: 54),
+
+                    ..._rounds.map(
+                      (round) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: RoundCard(
+                          round: round,
+                          title: '${round.phase} - Fecha ${round.order}',
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                  ],
+                ),
+
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      // Acción para agregar partidos
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Agregar partidos'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    ),
+                  ),
                 ),
 
                 if (isLoadingMatches)
@@ -159,5 +160,22 @@ class _LeagueState extends State<League> {
         ),
       ),
     );
+  }
+
+  Future<List<RoundDto>> _fetchRounds() async {
+    return await leagueService.getRoundsFromActivePhaseByLeagueId(widget.leagueDto.id);
+  }
+
+  Future<PositionsTableDto?> _fetchPositions(
+    String leagueId,
+    String phaseId,
+    String roundId,
+  ) async {
+    try {
+      return await leagueService.getLeaguePositions(leagueId, phaseId, roundId);
+    } catch (e) {
+      print("Error in _fetchPositions: $e");
+      return null; //TODO: Handle error
+    }
   }
 }
