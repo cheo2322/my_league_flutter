@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/config/config.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/positions_table_dto.dart';
@@ -7,8 +8,8 @@ import 'package:my_league_flutter/model/round_dto.dart';
 class LeagueService {
   final Dio _dio;
 
-  LeagueService({String baseUrl = "https://my-league-backend.onrender.com/my_league/v1"})
-    : _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  LeagueService({String? baseUrl})
+    : _dio = Dio(BaseOptions(baseUrl: baseUrl ?? ConfigUtils.baseUrl));
 
   Future<DefaultDto?> postLeague(LeagueDto body) async {
     try {

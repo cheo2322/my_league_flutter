@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/config/config.dart';
 import 'package:my_league_flutter/model/match_details.dart';
 import 'package:my_league_flutter/model/match_dto.dart';
 
 class MatchService {
   final Dio _dio;
 
-  MatchService({String baseUrl = "https://my-league-backend.onrender.com/my_league/v1"})
-    : _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  MatchService({String? baseUrl})
+    : _dio = Dio(BaseOptions(baseUrl: baseUrl ?? ConfigUtils.baseUrl));
 
   @Deprecated("Not available")
   Future<List<MatchDto>> getMatches() async {

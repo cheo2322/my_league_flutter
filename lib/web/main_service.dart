@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/config/config.dart';
 import 'package:my_league_flutter/model/favourites_dto.dart';
 
 class MainService {
   final Dio _dio;
 
-  MainService({String baseUrl = "https://my-league-backend.onrender.com/my_league/v1/main"})
-    : _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  MainService({String? baseUrl})
+    : _dio = Dio(BaseOptions(baseUrl: baseUrl ?? "${ConfigUtils.baseUrl}/main"));
 
   Future<FavouritesDto?> getFavourites(String token) async {
     try {

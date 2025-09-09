@@ -1,13 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/config/config.dart';
 import 'package:my_league_flutter/model/login_dto.dart';
 
 class AuthService {
   final Dio _dio;
 
-  AuthService({Dio? dio})
-    : _dio =
-          dio ??
-          Dio(BaseOptions(baseUrl: 'https://my-league-backend.onrender.com/my_league/v1/auth'));
+  AuthService({Dio? dio}) : _dio = dio ?? Dio(BaseOptions(baseUrl: '${ConfigUtils.baseUrl}/auth'));
 
   Future<LoginDto?> register({
     required String username,

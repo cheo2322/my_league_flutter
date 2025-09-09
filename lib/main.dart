@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_league_flutter/screens/main_screen.dart';
 import 'package:my_league_flutter/screens/second_page.dart';
 import 'package:my_league_flutter/screens/third_page.dart';
 import 'package:my_league_flutter/widgets/icon.dart';
 import 'package:my_league_flutter/widgets/user_drawer.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    throw Exception('Error cargando .env: $e');
+  }
+
   runApp(const MainApp());
 }
 

@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:my_league_flutter/config/config.dart';
 import 'package:my_league_flutter/model/team_dto.dart';
 
 class TeamService {
   final Dio _dio;
 
-  TeamService({
-    String baseUrl = "https://my-league-backend.onrender.com/my_league/v1",
-  }) : _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  TeamService({String? baseUrl}) : _dio = Dio(BaseOptions(baseUrl: baseUrl ?? ConfigUtils.baseUrl));
 
   Future<TeamDto?> getTeamInfo(String teamId) async {
     try {
