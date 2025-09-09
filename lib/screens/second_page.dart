@@ -72,9 +72,9 @@ class _MyFieldState extends State<MyField> {
     );
   }
 
-  Future<void> _fetchLeagues() async {
+  Future<void> _fetchLeagues(String token) async {
     try {
-      final response = await leagueService.getLeagues();
+      final response = await leagueService.getLeagues(token);
       setState(() {
         leagues = response;
         isLoadingLeagues = false;
@@ -117,7 +117,7 @@ class _MyFieldState extends State<MyField> {
     });
 
     if (token != null && username != null) {
-      await _fetchLeagues();
+      await _fetchLeagues(token!);
       await _loadTeams();
     }
   }

@@ -42,9 +42,12 @@ class LeagueService {
     }
   }
 
-  Future<List<LeagueDto>> getLeagues() async {
+  Future<List<LeagueDto>> getLeagues(String token) async {
     try {
-      final response = await _dio.get("/leagues");
+      final response = await _dio.get(
+        "/leagues",
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
       print('Leagues retrieved: ${response.data}');
       return LeagueDto.fromJsonList(response.data);
     } catch (e) {
