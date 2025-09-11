@@ -56,6 +56,7 @@ class LeagueService {
     }
   }
 
+  @Deprecated('Intended to be removed in future versions')
   Future<LeagueDto?> getLeague(String leagueId) async {
     try {
       final response = await _dio.get("/leagues/$leagueId");

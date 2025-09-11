@@ -1,25 +1,25 @@
 class LeagueDto {
   final String id;
   final String name;
-  final String? major;
   final String activePhaseId;
   final String activeRoundId;
+  final bool isTheOwner;
 
   LeagueDto({
     required this.id,
     required this.name,
-    this.major,
     required this.activePhaseId,
     required this.activeRoundId,
+    this.isTheOwner = false,
   });
 
   factory LeagueDto.fromJson(Map<String, dynamic> json) {
     return LeagueDto(
       id: json['id'],
       name: json['name'],
-      major: json['major'] ?? '',
       activePhaseId: json['activePhaseId'] ?? '',
       activeRoundId: json['activeRoundId'] ?? '',
+      isTheOwner: json['isTheOwner'] ?? false,
     );
   }
 
@@ -31,9 +31,9 @@ class LeagueDto {
     return {
       'id': id,
       'name': name,
-      'major': major ?? '',
       'activePhaseId': activePhaseId,
       'activeRoundId': activeRoundId,
+      'isTheOwner': isTheOwner,
     };
   }
 }

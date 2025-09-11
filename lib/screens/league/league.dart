@@ -91,7 +91,7 @@ class _LeagueState extends State<League> {
                 ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   children: [
-                    const SizedBox(height: 54),
+                    if (widget.leagueDto.isTheOwner) const SizedBox(height: 54),
 
                     ..._rounds.map(
                       (round) => Padding(
@@ -105,20 +105,21 @@ class _LeagueState extends State<League> {
                   ],
                 ),
 
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Acción para agregar partidos
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Agregar partidos'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                if (widget.leagueDto.isTheOwner)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // Acción para agregar partidos
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Agregar partidos'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      ),
                     ),
                   ),
-                ),
 
                 if (isLoadingMatches)
                   Container(

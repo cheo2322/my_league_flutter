@@ -47,8 +47,7 @@ class _NewLeagueState extends State<NewLeague> {
   void updateButtonState() {
     setState(() {
       isButtonEnabled =
-          nameController.text.trim().length > 2 &&
-          majorController.text.trim().length > 2;
+          nameController.text.trim().length > 2 && majorController.text.trim().length > 2;
     });
   }
 
@@ -142,10 +141,8 @@ class _NewLeagueState extends State<NewLeague> {
                     items:
                         ecuadorLocations.keys
                             .map(
-                              (province) => DropdownMenuItem(
-                                value: province,
-                                child: Text(province),
-                              ),
+                              (province) =>
+                                  DropdownMenuItem(value: province, child: Text(province)),
                             )
                             .toList(),
                     onChanged: (value) {
@@ -167,12 +164,7 @@ class _NewLeagueState extends State<NewLeague> {
                         selectedProvince == null
                             ? []
                             : ecuadorLocations[selectedProvince]!
-                                .map(
-                                  (city) => DropdownMenuItem(
-                                    value: city,
-                                    child: Text(city),
-                                  ),
-                                )
+                                .map((city) => DropdownMenuItem(value: city, child: Text(city)))
                                 .toList(),
                     onChanged: (value) {
                       setState(() {
@@ -241,8 +233,7 @@ class _NewLeagueState extends State<NewLeague> {
                         child: TextField(
                           controller: customLocationController,
                           decoration: const InputDecoration(
-                            labelText:
-                                'Si deseas, especifica el lugar del torneo',
+                            labelText: 'Si deseas, especifica el lugar del torneo',
                             hintText: 'Parroquia, barrio, etc',
                             border: OutlineInputBorder(),
                           ),
@@ -271,7 +262,6 @@ class _NewLeagueState extends State<NewLeague> {
                                   LeagueDto(
                                     id: "",
                                     name: nameController.text,
-                                    major: majorController.text,
                                     activePhaseId: "",
                                     activeRoundId: "",
                                   ),
@@ -287,10 +277,7 @@ class _NewLeagueState extends State<NewLeague> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder:
-                                          (context) => NewLeagueTeams(
-                                            leagueId: leagueId!,
-                                          ),
+                                      builder: (context) => NewLeagueTeams(leagueId: leagueId!),
                                     ),
                                   );
                                 })
@@ -305,10 +292,7 @@ class _NewLeagueState extends State<NewLeague> {
                           : null,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('Siguiente'),
-                      const Icon(Icons.chevron_right),
-                    ],
+                    children: [const Text('Siguiente'), const Icon(Icons.chevron_right)],
                   ),
                 ),
               ],

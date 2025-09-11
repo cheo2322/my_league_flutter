@@ -28,7 +28,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    _initializeScreen();
+    if (mounted) {
+      _initializeScreen();
+    }
   }
 
   @override

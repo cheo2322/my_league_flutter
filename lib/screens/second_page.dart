@@ -178,6 +178,7 @@ class _MyFieldState extends State<MyField> {
                           name: league.name,
                           activePhaseId: league.activePhaseId,
                           activeRoundId: league.activeRoundId,
+                          isTheOwner: league.isTheOwner,
                         ),
                       ),
                 ),
