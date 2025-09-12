@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/match_dto.dart';
+import 'package:my_league_flutter/web/team_service.dart';
 
 class NewRound extends StatefulWidget {
   final DefaultDto leagueDto;
@@ -12,7 +13,19 @@ class NewRound extends StatefulWidget {
 }
 
 class _NewRoundState extends State<NewRound> {
+  TeamService teamService = TeamService();
+
+  final List<DefaultDto> teams = [];
   final List<MatchDto> _matches = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadTeams();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,51 +43,60 @@ class _NewRoundState extends State<NewRound> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child:
-                _matches.isEmpty
-                    ? const Center(child: Text("Aún no has agregado partidos."))
-                    : ListView.builder(
-                      itemCount: _matches.length,
-                      itemBuilder: (context, index) {
-                        final match = _matches[index];
-                        return ListTile(
-                          title: Text("${match.homeTeam} vs ${match.visitTeam}"),
-                          subtitle: Text("${match.date} - ${match.time}"),
-                        );
-                      },
-                    ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: Column(
-              children: [
+      body:
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : teams.isEmpty
+              ? const Center(child: Text("No hay equipos en esta liga."))
+              : _buildMainContent(primaryColor),
+    );
+  }
+
+  Column _buildMainContent(Color primaryColor) {
+    return Column(
+      children: [
+        Expanded(
+          child:
+              _matches.isEmpty
+                  ? const Center(child: Text("Aún no has agregado partidos."))
+                  : ListView.builder(
+                    itemCount: _matches.length,
+                    itemBuilder: (context, index) {
+                      final match = _matches[index];
+                      return ListTile(
+                        title: Text("${match.homeTeam} vs ${match.visitTeam}"),
+                        subtitle: Text("${match.date} - ${match.time}"),
+                      );
+                    },
+                  ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _showAddMatchModal,
+                  icon: const Icon(Icons.add),
+                  label: const Text("Agregar partido"),
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (_matches.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: _showAddMatchModal,
-                    icon: const Icon(Icons.add),
-                    label: const Text("Agregar partido"),
+                    onPressed: _confirmCreation,
+                    icon: const Icon(Icons.check, color: Colors.white),
+                    label: const Text("Crear fecha", style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                   ),
                 ),
-                const SizedBox(height: 8),
-                if (_matches.isNotEmpty)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _confirmCreation,
-                      icon: const Icon(Icons.check, color: Colors.white),
-                      label: const Text("Crear fecha", style: TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -96,7 +118,7 @@ class _NewRoundState extends State<NewRound> {
             right: 16,
             top: 24,
           ),
-          child: _PartidoForm(onConfirm: _addMatch),
+          child: _PartidoForm(onConfirm: _addMatch, teams: teams),
         );
       },
     );
@@ -123,42 +145,74 @@ class _NewRoundState extends State<NewRound> {
           ),
     );
   }
+
+  void _loadTeams() async {
+    final teamDtos = await teamService.getTeamsFromLeague(widget.leagueDto.id);
+
+    setState(() {
+      teams.addAll(teamDtos.map((dto) => dto).toList());
+      isLoading = false;
+    });
+  }
 }
 
 class _PartidoForm extends StatefulWidget {
   final void Function(MatchDto) onConfirm;
+  final List<DefaultDto> teams;
 
-  const _PartidoForm({required this.onConfirm});
+  const _PartidoForm({required this.onConfirm, required this.teams});
 
   @override
   State<_PartidoForm> createState() => _PartidoFormState();
 }
 
 class _PartidoFormState extends State<_PartidoForm> {
-  String? equipoLocal;
-  String? equipoVisitante;
+  String? homeTeam;
+  String? homeTeamId;
+  String? awayTeam;
+  String? awayTeamId;
   DateTime? fecha;
   TimeOfDay? hora;
 
-  final List<String> equipos = ["Equipo A", "Equipo B", "Equipo C"];
-
   @override
   Widget build(BuildContext context) {
+    final equiposLocalDisponibles = widget.teams.where((e) => e.name != awayTeam).toList();
+    final equiposVisitanteDisponibles = widget.teams.where((e) => e.name != homeTeam).toList();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         DropdownButtonFormField<String>(
           decoration: const InputDecoration(labelText: "Equipo local"),
-          items: equipos.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-          onChanged: (value) => setState(() => equipoLocal = value),
+          items:
+              equiposLocalDisponibles
+                  .map((e) => DropdownMenuItem(value: e.id, child: Text(e.name)))
+                  .toList(),
+          onChanged: (value) {
+            setState(() {
+              homeTeam = value;
+              if (awayTeam == value) awayTeam = null;
+            });
+          },
+          value: homeTeam,
         ),
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
           decoration: const InputDecoration(labelText: "Equipo visitante"),
-          items: equipos.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-          onChanged: (value) => setState(() => equipoVisitante = value),
+          items:
+              equiposVisitanteDisponibles
+                  .map((e) => DropdownMenuItem(value: e.id, child: Text(e.name)))
+                  .toList(),
+          onChanged: (value) {
+            setState(() {
+              awayTeam = value;
+              if (homeTeam == value) homeTeam = null;
+            });
+          },
+          value: awayTeam,
         ),
         const SizedBox(height: 12),
+
         Row(
           children: [
             Expanded(
@@ -199,15 +253,15 @@ class _PartidoFormState extends State<_PartidoForm> {
         const SizedBox(height: 16),
         ElevatedButton(
           onPressed: () {
-            if (equipoLocal != null &&
-                equipoVisitante != null &&
+            if (homeTeam != null &&
+                awayTeam != null &&
                 fecha != null &&
                 hora != null &&
-                equipoLocal != equipoVisitante) {
+                homeTeam != awayTeam) {
               final match = MatchDto(
                 id: DateTime.now().millisecondsSinceEpoch.toString(),
-                homeTeam: equipoLocal!,
-                visitTeam: equipoVisitante!,
+                homeTeam: homeTeam!,
+                visitTeam: awayTeam!,
                 homeResult: 0,
                 visitResult: 0,
                 status: "pendiente",
