@@ -8,12 +8,11 @@ import 'package:my_league_flutter/model/round_dto.dart';
 class LeagueService {
   final Dio _dio;
 
-  LeagueService({String? baseUrl})
-    : _dio = Dio(BaseOptions(baseUrl: baseUrl ?? ConfigUtils.baseUrl));
+  LeagueService() : _dio = Dio(BaseOptions(baseUrl: "${ConfigUtils.baseUrl}/leagues"));
 
   Future<DefaultDto?> postLeague(LeagueDto body) async {
     try {
-      final response = await _dio.post("/leagues", data: body.toJson());
+      final response = await _dio.post("", data: body.toJson());
       return DefaultDto.fromJson(response.data);
     } catch (e) {
       print("Error en postLeague: $e");
@@ -23,7 +22,7 @@ class LeagueService {
 
   Future<List<DefaultDto>?> getTeamsFromLeague(String leagueId) async {
     try {
-      final response = await _dio.get("/leagues/$leagueId/teams");
+      final response = await _dio.get("/$leagueId/teams");
       return DefaultDto.fromJsonList(response.data);
     } catch (e) {
       print("Error in GET teams");
@@ -33,7 +32,7 @@ class LeagueService {
 
   Future<DefaultDto?> addTeamToLeague(DefaultDto teamDto, String leagueId) async {
     try {
-      final response = await _dio.post("/leagues/$leagueId/team", data: teamDto.toJson());
+      final response = await _dio.post("/$leagueId/team", data: teamDto.toJson());
       return DefaultDto.fromJson(response.data);
     } catch (e) {
       print("Error in createTeam");
@@ -45,7 +44,7 @@ class LeagueService {
   Future<List<DefaultDto>> getLeagues(String token) async {
     try {
       final response = await _dio.get(
-        "/leagues",
+        "",
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
       print('Leagues retrieved: ${response.data}');
@@ -59,7 +58,7 @@ class LeagueService {
   Future<LeagueDto?> getLeague(String leagueId, String? token) async {
     try {
       final response = await _dio.get(
-        "/leagues/$leagueId",
+        "/$leagueId",
         options: Options(headers: {"Authorization": "Bearer ${token ?? ''}"}),
       );
 
@@ -76,7 +75,7 @@ class LeagueService {
     String roundId,
   ) async {
     try {
-      final response = await _dio.get("/leagues/$leagueId/positions/$phaseId/$roundId");
+      final response = await _dio.get("/$leagueId/positions/$phaseId/$roundId");
 
       print("League positions retrieved: ${response.data}");
 
@@ -89,7 +88,7 @@ class LeagueService {
 
   Future<List<RoundDto>> getRoundsFromActivePhaseByLeagueId(String leagueId) async {
     try {
-      final response = await _dio.get("/leagues/$leagueId/phases/active/rounds");
+      final response = await _dio.get("/$leagueId/phases/active/rounds");
       return RoundDto.fromJsonList(response.data);
     } catch (e) {
       print("Error in GET rounds from active phase: $e");
