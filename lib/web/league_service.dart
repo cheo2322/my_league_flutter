@@ -42,24 +42,27 @@ class LeagueService {
     }
   }
 
-  Future<List<LeagueDto>> getLeagues(String token) async {
+  Future<List<DefaultDto>> getLeagues(String token) async {
     try {
       final response = await _dio.get(
         "/leagues",
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
       print('Leagues retrieved: ${response.data}');
-      return LeagueDto.fromJsonList(response.data);
+      return DefaultDto.fromJsonList(response.data);
     } catch (e) {
       print('Error getting leagues: $e');
       return [];
     }
   }
 
-  @Deprecated('Intended to be removed in future versions')
-  Future<LeagueDto?> getLeague(String leagueId) async {
+  Future<LeagueDto?> getLeague(String leagueId, String? token) async {
     try {
-      final response = await _dio.get("/leagues/$leagueId");
+      final response = await _dio.get(
+        "/leagues/$leagueId",
+        options: Options(headers: {"Authorization": "Bearer ${token ?? ''}"}),
+      );
+
       return LeagueDto.fromJson(response.data);
     } catch (e) {
       print("Error in GET league: $e");

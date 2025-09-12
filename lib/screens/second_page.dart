@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_league_flutter/model/default_dto.dart';
-import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/league/new_league.dart';
 import 'package:my_league_flutter/web/league_service.dart';
@@ -18,7 +17,7 @@ class _MyFieldState extends State<MyField> {
   LeagueService leagueService = LeagueService();
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
-  List<LeagueDto> leagues = [];
+  List<DefaultDto> leagues = [];
   List<DefaultDto> teams = [];
   bool isLoadingLeagues = true;
   bool isLoadingTeams = true;
@@ -171,16 +170,7 @@ class _MyFieldState extends State<MyField> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (_) => League(
-                        leagueDto: LeagueDto(
-                          id: league.id,
-                          name: league.name,
-                          activePhaseId: league.activePhaseId,
-                          activeRoundId: league.activeRoundId,
-                          isTheOwner: league.isTheOwner,
-                        ),
-                      ),
+                  builder: (_) => League(defaultDto: DefaultDto(id: league.id, name: league.name)),
                 ),
               );
             },

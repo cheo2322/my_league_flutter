@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_league_flutter/model/league_dto.dart';
+import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/league/league.dart';
 import 'package:my_league_flutter/screens/match/match_card.dart';
@@ -35,12 +35,7 @@ class RoundCard extends StatelessWidget {
                   MaterialPageRoute(
                     builder:
                         (context) => League(
-                          leagueDto: LeagueDto(
-                            id: round.leagueId,
-                            name: round.leagueName,
-                            activePhaseId: round.phaseId,
-                            activeRoundId: round.roundId,
-                          ),
+                          defaultDto: DefaultDto(id: round.leagueId, name: round.leagueName),
                         ),
                   ),
                 );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_league_flutter/model/default_dto.dart';
 import 'package:my_league_flutter/model/league_dto.dart';
 import 'package:my_league_flutter/model/phase_status.dart';
 import 'package:my_league_flutter/model/positions_table_dto.dart';
@@ -8,9 +10,9 @@ import 'package:my_league_flutter/screens/positions/positions_table.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
-  final LeagueDto leagueDto;
+  final DefaultDto defaultDto;
 
-  const League({super.key, required this.leagueDto});
+  const League({super.key, required this.defaultDto});
 
   @override
   State<League> createState() => _LeagueState();
@@ -18,6 +20,7 @@ class League extends StatefulWidget {
 
 class _LeagueState extends State<League> {
   LeagueService leagueService = LeagueService();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   List<Tab> tabs = [
     Tab(text: 'Partidos'),
@@ -26,36 +29,24 @@ class _LeagueState extends State<League> {
     // Tab(text: 'Estadísticas'), // TODO: Add Statistics later if needed
   ];
 
+  bool isLoading = true;
   bool isLoadingMatches = true;
   bool isLoadingPositions = true;
   bool isLoadingPhases = true;
 
+  LeagueDto? leagueDto;
   List<RoundDto> _rounds = [];
   PositionsTableDto? _positionsTable;
   List<PhaseDto> phases = [];
+
+  String? token;
 
   @override
   void initState() {
     super.initState();
 
     if (mounted) {
-      _fetchRounds().then((response) {
-        setState(() {
-          _rounds = response;
-          isLoadingMatches = false;
-        });
-      });
-
-      _fetchPositions(
-        widget.leagueDto.id,
-        widget.leagueDto.activePhaseId,
-        widget.leagueDto.activeRoundId,
-      ).then((response) {
-        setState(() {
-          _positionsTable = response;
-          isLoadingPositions = false;
-        });
-      });
+      _initAsync();
     }
   }
 
@@ -63,12 +54,21 @@ class _LeagueState extends State<League> {
   Widget build(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
 
+    return isLoading
+        ? Container(
+          color: Colors.black.withValues(alpha: .5),
+          child: const Center(child: CircularProgressIndicator()),
+        )
+        : _buildDefaultView(primaryColor, context);
+  }
+
+  DefaultTabController _buildDefaultView(Color primaryColor, BuildContext context) {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
-          title: Text(widget.leagueDto.name, style: TextStyle(fontSize: 18, color: Colors.white)),
+          title: Text(widget.defaultDto.name, style: TextStyle(fontSize: 18, color: Colors.white)),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
@@ -91,7 +91,7 @@ class _LeagueState extends State<League> {
                 ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   children: [
-                    if (widget.leagueDto.isTheOwner) const SizedBox(height: 54),
+                    if (leagueDto!.isTheOwner) const SizedBox(height: 54),
 
                     ..._rounds.map(
                       (round) => Padding(
@@ -105,7 +105,7 @@ class _LeagueState extends State<League> {
                   ],
                 ),
 
-                if (widget.leagueDto.isTheOwner)
+                if (leagueDto!.isTheOwner)
                   Positioned(
                     top: 8,
                     right: 8,
@@ -163,8 +163,33 @@ class _LeagueState extends State<League> {
     );
   }
 
+  Future<void> _initAsync() async {
+    token = await secureStorage.read(key: 'auth_token');
+
+    _fetchLeagueDetails(widget.defaultDto.id, token).then((response) {
+      setState(() {
+        leagueDto = response;
+        isLoading = false;
+      });
+    });
+
+    _fetchRounds().then((response) {
+      setState(() {
+        _rounds = response;
+        isLoadingMatches = false;
+      });
+    });
+
+    _fetchPositions(widget.defaultDto.id, '', '').then((response) {
+      setState(() {
+        _positionsTable = response;
+        isLoadingPositions = false;
+      });
+    });
+  }
+
   Future<List<RoundDto>> _fetchRounds() async {
-    return await leagueService.getRoundsFromActivePhaseByLeagueId(widget.leagueDto.id);
+    return await leagueService.getRoundsFromActivePhaseByLeagueId(widget.defaultDto.id);
   }
 
   Future<PositionsTableDto?> _fetchPositions(
@@ -177,6 +202,15 @@ class _LeagueState extends State<League> {
     } catch (e) {
       print("Error in _fetchPositions: $e");
       return null; //TODO: Handle error
+    }
+  }
+
+  Future<LeagueDto?> _fetchLeagueDetails(String leagueId, String? token) async {
+    try {
+      return await leagueService.getLeague(leagueId, token);
+    } catch (e) {
+      print("Error in _fetchLeagueDetails: $e");
+      return null;
     }
   }
 }
