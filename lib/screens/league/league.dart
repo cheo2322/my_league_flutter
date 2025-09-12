@@ -164,33 +164,35 @@ class _LeagueState extends State<League> {
   }
 
   Future<void> _initAsync() async {
-    token = await secureStorage.read(key: 'auth_token');
+    secureStorage.read(key: 'auth_token').then((retrievedToken) {
+      token = retrievedToken;
 
-    _fetchRounds().then((response) {
-      setState(() {
-        _rounds = response;
-        isLoadingMatches = false;
-      });
-    });
-
-    _fetchLeagueDetails(widget.defaultDto.id, token).then((league) {
-      if (league == null) {
-        print("LeagueDto es null, no se puede cargar posiciones.");
-        setState(() => isLoading = false);
-        return; // TODO: Send message to user
-      }
-
-      setState(() {
-        leagueDto = league;
-        isLoading = false;
-      });
-
-      _fetchPositions(widget.defaultDto.id, league.activePhaseId, league.activeRoundId).then((
-        positions,
-      ) {
+      _fetchRounds().then((response) {
         setState(() {
-          _positionsTable = positions;
-          isLoadingPositions = false;
+          _rounds = response;
+          isLoadingMatches = false;
+        });
+      });
+
+      _fetchLeagueDetails(widget.defaultDto.id, token).then((league) {
+        if (league == null) {
+          print("⚠️ LeagueDto es null, no se puede cargar posiciones.");
+          setState(() => isLoading = false);
+          return;
+        }
+
+        setState(() {
+          leagueDto = league;
+          isLoading = false;
+        });
+
+        _fetchPositions(widget.defaultDto.id, league.activePhaseId, league.activeRoundId).then((
+          positions,
+        ) {
+          setState(() {
+            _positionsTable = positions;
+            isLoadingPositions = false;
+          });
         });
       });
     });
