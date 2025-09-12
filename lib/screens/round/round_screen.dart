@@ -14,6 +14,70 @@ class NewRound extends StatefulWidget {
 class _NewRoundState extends State<NewRound> {
   final List<MatchDto> _matches = [];
 
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: const Text(
+          "Crear una nueva fecha",
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                _matches.isEmpty
+                    ? const Center(child: Text("Aún no has agregado partidos."))
+                    : ListView.builder(
+                      itemCount: _matches.length,
+                      itemBuilder: (context, index) {
+                        final match = _matches[index];
+                        return ListTile(
+                          title: Text("${match.homeTeam} vs ${match.visitTeam}"),
+                          subtitle: Text("${match.date} - ${match.time}"),
+                        );
+                      },
+                    ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _showAddMatchModal,
+                    icon: const Icon(Icons.add),
+                    label: const Text("Agregar partido"),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (_matches.isNotEmpty)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _confirmCreation,
+                      icon: const Icon(Icons.check, color: Colors.white),
+                      label: const Text("Crear fecha", style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _addMatch(MatchDto match) {
     setState(() {
       _matches.add(match);
@@ -51,65 +115,12 @@ class _NewRoundState extends State<NewRound> {
                 onPressed: () {
                   Navigator.pop(context);
                   // Aquí podrías enviar los datos al backend o continuar el flujo
-                  print("✅ Fecha creada con ${_matches.length} partidos");
+                  // print("✅ Fecha creada con ${_matches.length} partidos");
                 },
                 child: const Text("Confirmar"),
               ),
             ],
           ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: const Text(
-          "Crear una nueva fecha",
-          style: TextStyle(fontSize: 18, color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child:
-                _matches.isEmpty
-                    ? const Center(child: Text("Aún no has agregado partidos."))
-                    : ListView.builder(
-                      itemCount: _matches.length,
-                      itemBuilder: (context, index) {
-                        final match = _matches[index];
-                        return ListTile(
-                          title: Text("${match.homeTeam} vs ${match.visitTeam}"),
-                          subtitle: Text("${match.date} - ${match.time}"),
-                        );
-                      },
-                    ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _showAddMatchModal,
-                icon: const Icon(Icons.add),
-                label: const Text("Agregar partido"),
-              ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton:
-          _matches.isNotEmpty
-              ? FloatingActionButton(onPressed: _confirmCreation, child: const Icon(Icons.check))
-              : null,
     );
   }
 }
