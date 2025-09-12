@@ -7,6 +7,7 @@ import 'package:my_league_flutter/model/positions_table_dto.dart';
 import 'package:my_league_flutter/model/round_dto.dart';
 import 'package:my_league_flutter/screens/main/round_card.dart';
 import 'package:my_league_flutter/screens/positions/positions_table.dart';
+import 'package:my_league_flutter/screens/round/round_screen.dart';
 import 'package:my_league_flutter/web/league_service.dart';
 
 class League extends StatefulWidget {
@@ -19,7 +20,7 @@ class League extends StatefulWidget {
 }
 
 class _LeagueState extends State<League> {
-  LeagueService leagueService = LeagueService();
+  final LeagueService leagueService = LeagueService();
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   List<Tab> tabs = [
@@ -111,7 +112,12 @@ class _LeagueState extends State<League> {
                     right: 8,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Acción para agregar partidos
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewRound(leagueDto: widget.defaultDto),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.add),
                       label: const Text('Agregar partidos'),
@@ -176,9 +182,9 @@ class _LeagueState extends State<League> {
 
       _fetchLeagueDetails(widget.defaultDto.id, token).then((league) {
         if (league == null) {
-          print("⚠️ LeagueDto es null, no se puede cargar posiciones.");
+          print("ERROR");
           setState(() => isLoading = false);
-          return;
+          return; // TODO: Handle error
         }
 
         setState(() {
