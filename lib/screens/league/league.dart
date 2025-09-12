@@ -166,13 +166,6 @@ class _LeagueState extends State<League> {
   Future<void> _initAsync() async {
     token = await secureStorage.read(key: 'auth_token');
 
-    _fetchLeagueDetails(widget.defaultDto.id, token).then((response) {
-      setState(() {
-        leagueDto = response;
-        isLoading = false;
-      });
-    });
-
     _fetchRounds().then((response) {
       setState(() {
         _rounds = response;
@@ -180,10 +173,25 @@ class _LeagueState extends State<League> {
       });
     });
 
-    _fetchPositions(widget.defaultDto.id, '', '').then((response) {
+    _fetchLeagueDetails(widget.defaultDto.id, token).then((league) {
+      if (league == null) {
+        print("LeagueDto es null, no se puede cargar posiciones.");
+        setState(() => isLoading = false);
+        return; // TODO: Send message to user
+      }
+
       setState(() {
-        _positionsTable = response;
-        isLoadingPositions = false;
+        leagueDto = league;
+        isLoading = false;
+      });
+
+      _fetchPositions(widget.defaultDto.id, league.activePhaseId, league.activeRoundId).then((
+        positions,
+      ) {
+        setState(() {
+          _positionsTable = positions;
+          isLoadingPositions = false;
+        });
       });
     });
   }
